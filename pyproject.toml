@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "AdventOfCode"
+version = "0.1.0"
+description = "Personal solutions to the puzzles of Advent of Code"
+authors = ["Aucke Bos <aucke.bos97@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = ">=3.7, <3.11"
+bitstring = "^3.1.9"
+numpy = "^1.21.4"
+black = "^21.12b0"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
