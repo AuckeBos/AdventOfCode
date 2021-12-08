@@ -1,5 +1,4 @@
-from typing import Optional, List
-import string
+from typing import List
 
 import numpy as np
 from numpy.typing import NDArray
@@ -8,27 +7,13 @@ alphabet = "abcdefghijklmnopqrstuvwxyz"
 
 
 class Digit:
-    # Map a 0-9 int to its len in chars
-    VAL_TO_INPUT_LEN = {0: 6, 1: 2, 2: 5, 3: 5, 4: 4, 5: 5, 6: 6, 7: 3, 8: 7, 9: 6}
 
-    # Map a digit with len chars to the pos that are present in the original mapping
+    # Map the length of the input to the pos that are present in the original mapping
     INPUT_LEN_TO_PRESENT_POS = {
         2: [2, 5],
-        3: [0, 2, 5],
         4: [1, 2, 3, 5],
-        5: [0, 3, 6],
-        6: [0, 1, 5, 6],
+        3: [0, 2, 5],
         7: [0, 1, 2, 3, 4, 5, 6],
-    }
-
-    # Map a digit with len chars to the pos that are absent in the original mapping
-    INPUT_LEN_TO_ABSENT_POS = {
-        2: [0, 1, 3, 4, 6],
-        3: [1, 3, 4, 6],
-        4: [0, 4, 6],
-        5: [],
-        6: [],
-        7: [],
     }
 
     CHARS_TO_DIGIT = {
@@ -44,32 +29,14 @@ class Digit:
         "abcdfg": 9,
     }
 
-    # Chars 0-6 exist, these are a-g
-    ALL_POSITIONS = set(range(0, 7))
-
-    # Char indices: a = 0, b = 1
-
-    # Index exists in this list if the char belonging to it was present in the input
-    present_chars: List[int]
-    # All char indices except those in present_positions
-    absent_chars: List[int]
-
-    # Index exists in this list if the position should be 'on' for self.val. Eg for a
-    # digit with val 1, present_positions_for_val = [2,5] (namely c, f)
-    present_positions: List[int]
-    # All char indices except those in present_positions_for_val
-    absent_positions: List[int]
+    input: str
 
     def __init__(self, inp: str):
-        inp = sorted(inp)
-        self.present_chars = [alphabet.index(c) for c in inp]
-        self.absent_chars = list(Digit.ALL_POSITIONS.difference(self.present_chars))
-        self.present_positions = self.INPUT_LEN_TO_PRESENT_POS[len(inp)]
-        self.absent_positions = self.INPUT_LEN_TO_ABSENT_POS[len(inp)]
+        self.input = "".join(sorted(inp))
 
     # Simple digits are those that we can extract the val from by looking at the n_chars
     def is_simple_digit(self):
-        return len(self.present_chars) in [2, 3, 4, 7]
+        return len(self.input) in [2, 3, 4, 7]
 
     def get_option_matrix(self) -> NDArray:
         """
@@ -87,14 +54,20 @@ class Digit:
         """
         # All options open
         mapping = np.full((7, 7), dtype=bool, fill_value=1)
-        # The current chars do not map to absent positions
-        if self.absent_positions:
-            for char in self.present_chars:
-                mapping[char, self.absent_positions] = False
-        # Absent chars do not map to present positions
-        if self.present_positions:
-            for char in self.absent_chars:
-                mapping[char, self.present_positions] = False
+        if self.is_simple_digit():
+            present_chars = [alphabet.index(c) for c in self.input]
+            absent_chars = list(set(range(7)).difference(present_chars))
+            present_positions = self.INPUT_LEN_TO_PRESENT_POS[len(self.input)]
+            absent_positions = list(set(range(7)).difference(present_positions))
+
+            # The current chars do not map to absent positions
+            if absent_positions:
+                for char in present_chars:
+                    mapping[char, absent_positions] = False
+            # Absent chars do not map to present positions
+            if present_positions:
+                for char in absent_chars:
+                    mapping[char, present_positions] = False
 
         return mapping
 
@@ -105,9 +78,6 @@ class Digit:
         :return: int the digit value
         """
         mapping = np.array(mapping)
-        new_indices = mapping[self.present_chars]
-        new_chars = "".join(sorted([alphabet[i] for i in new_indices]))
-        value = 0
-        if new_chars in self.CHARS_TO_DIGIT:
-            value = self.CHARS_TO_DIGIT[new_chars]
-        return value
+        new_indices = sorted(mapping[[alphabet.index(c) for c in self.input]])
+        new_chars = "".join([alphabet[i] for i in new_indices])
+        return self.CHARS_TO_DIGIT.get(new_chars, 0)

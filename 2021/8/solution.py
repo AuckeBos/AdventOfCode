@@ -1,5 +1,6 @@
 from helpers import read_input
 from line import Line
+
 # PT1: Cost 1 per step
 # PT2: Cum cost per step
 PART = 2

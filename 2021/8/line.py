@@ -1,10 +1,10 @@
+from itertools import product
 from typing import List
 
 import numpy as np
 from numpy.typing import NDArray
 
 from digit import Digit
-import string
 
 
 class Line:
@@ -34,16 +34,13 @@ class Line:
         Find the mapping of letters to positions:
         - Get the option matrix. This matrix might (probably will) contain more tha
         n1 true value per row
-        - Convert the matrix to a list of matrices, one for each true value in the
-        original matrix. The row for that true value will contain only false values
-        in the rest of the cols
-        - Convert each matrix to a mapping. The mapping maps the original char value
-        (index) to the new char value (value)
+        - Convert the matrix into a list of mapping. This is a list of all possible
+        combinations, where we take one col as true value out of all true values of
+        the row
         - Check each mapping. As soon as we find a valid one, return it
         """
         matrix = self.get_option_matrix()
-        matrices = self.split_matrix(matrix)
-        mappings = self.matrices_to_mappings(matrices)
+        mappings = list(product(*[np.where(matrix[char])[0] for char in range(7)]))
         for mapping in mappings:
             if self.check_mapping(mapping):
                 return mapping
@@ -53,15 +50,6 @@ class Line:
     def check_mapping(self, mapping: List[int]):
         digits = [digit.get_val_by_mapping(mapping) for digit in self.inputs]
         return len(set(range(0, 10)).intersection(digits)) == 10
-
-    def matrices_to_mappings(self, matrices: List[NDArray]):
-        # Each matrix to a mapping. Mapping maps char id to new char id
-        mappings = [
-            [np.where(matr[char])[0][0] for char in range(matr.shape[0])]
-            for matr in matrices
-        ]
-
-        return mappings
 
     def compute_output(self) -> int:
         """
@@ -74,27 +62,3 @@ class Line:
             "".join([str(digit.get_val_by_mapping(mapping)) for digit in self.outputs])
         )
         return result
-
-    @classmethod
-    def split_matrix(cls, matrix: NDArray) -> List[NDArray]:
-        """
-        Matrix with possible more than 1 true value per row to:
-        List of matrices with 1 true value per row
-        :param matrix: (7,7) boolean matrix. True if r could map to c
-        :return:  List o (7,7) matrices.
-        """
-        # Duplicate matrix, where each row with more than 1 True is copied to new
-        # matrices with 1 true per matrix
-        matrices = []
-        for char in range(matrix.shape[0]):
-            options = np.where(matrix[char])[0]
-            if len(options) == 1:
-                continue
-            for option in options:
-                copy = np.copy(matrix)
-                copy[char] = False
-                copy[char, option] = True
-                matrices.extend(cls.split_matrix(copy))
-        if not matrices:
-            matrices.append(matrix)
-        return matrices
