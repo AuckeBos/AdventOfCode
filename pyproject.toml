@@ -9,6 +9,7 @@ python = ">=3.7, <3.11"
 bitstring = "^3.1.9"
 numpy = "^1.21.4"
 black = "^21.12b0"
+advent-of-code-data = "^1.1.1"
 
 [tool.poetry.dev-dependencies]
 
