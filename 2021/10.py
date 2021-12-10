@@ -1,12 +1,4 @@
-from collections import defaultdict
-from math import floor
-from typing import List
-
 import numpy as np
-
-
-# PT1:
-# PT2:
 from aocd.models import Puzzle
 
 syntax_score_map = {
