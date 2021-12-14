@@ -29,7 +29,7 @@ class Map:
 
     def parse_fold_line(self, line: str) -> Tuple[int, int]:
         l, r = line.split('=')
-        axis = 1 if l[-1] == 'x' else 0
+        axis = int(l[-1] == 'x')
         value = int(r)
         return axis, value
 
