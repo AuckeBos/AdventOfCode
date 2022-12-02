@@ -1,6 +1,7 @@
 from puzzle_to_solve import PuzzleToSolve
 
-class SolvedPuzzle(PuzzleToSolve):
+
+class Puzzle1(PuzzleToSolve):
     @property
     def day(self) -> int:
         return 1
@@ -25,11 +26,19 @@ class SolvedPuzzle(PuzzleToSolve):
     @property
     def test_answer_a(self):
         return 24000
-        
+
     @property
     def test_answer_b(self):
         return 45000
 
+    """
+    Solve a:
+    - Split on newlines. One string per Elve
+    - Split the string of each Elve. List of strings per Elve
+    - Cast each value. List of ints per Elve
+    - Sum for each Elve. One int per Elve
+    - Take the max Elve
+    """
     def a(self, input: str) -> int:
         elves = input.split("\n\n")
         elves_parsed = [elve.split("\n") for elve in elves]
@@ -38,6 +47,16 @@ class SolvedPuzzle(PuzzleToSolve):
         max_elve = max(elves_summed)
         return max_elve
 
+    """
+    Solve b:
+    - Split on newlines. One string per Elve
+    - Split the string of each Elve. List of strings per Elve
+    - Cast each value. List of ints per Elve
+    - Sum for each Elve. One int per Elve
+    - Sort the list of Elves descending: Max Elves first
+    - Take the top three Elves
+    - Sum the top 3
+    """
     def b(self, input: str) -> int:
         elves = input.split("\n\n")
         elves_parsed = [elve.split("\n") for elve in elves]
@@ -48,5 +67,6 @@ class SolvedPuzzle(PuzzleToSolve):
         summed = sum(top_3)
         return summed
 
-puzzle = SolvedPuzzle()
+
+puzzle = Puzzle1()
 puzzle.solve()
