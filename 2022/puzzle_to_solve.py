@@ -18,6 +18,7 @@ class PuzzleToSolve(ABC):
     The day of the puzzle 
     """
     @property
+    @abstractmethod
     def day(cls) -> int:
         return None
 

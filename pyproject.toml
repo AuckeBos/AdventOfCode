@@ -5,11 +5,12 @@ description = "Personal solutions to the puzzles of Advent of Code"
 authors = ["Aucke Bos <aucke.bos97@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = ">=3.7, <3.11"
+python = ">=3.8, <3.11"
 bitstring = "^3.1.9"
 numpy = "^1.21.4"
 black = "^21.12b0"
 advent-of-code-data = "^1.1.1"
+pandas = "^1.5.2"
 
 [tool.poetry.dev-dependencies]
 
