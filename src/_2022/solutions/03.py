@@ -1,4 +1,4 @@
-from puzzle_to_solve import PuzzleToSolve
+from src._2022.puzzle_to_solve import PuzzleToSolve
 import string
 
 class Puzzle4(PuzzleToSolve):

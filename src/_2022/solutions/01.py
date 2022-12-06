@@ -1,4 +1,4 @@
-from puzzle_to_solve import PuzzleToSolve
+from src._2022.puzzle_to_solve import PuzzleToSolve
 
 
 class Puzzle1(PuzzleToSolve):
@@ -39,6 +39,7 @@ class Puzzle1(PuzzleToSolve):
     - Sum for each Elve. One int per Elve
     - Take the max Elve
     """
+
     def a(self, input: str) -> int:
         elves = input.split("\n\n")
         elves_parsed = [elve.split("\n") for elve in elves]
@@ -57,6 +58,7 @@ class Puzzle1(PuzzleToSolve):
     - Take the top three Elves
     - Sum the top 3
     """
+
     def b(self, input: str) -> int:
         elves = input.split("\n\n")
         elves_parsed = [elve.split("\n") for elve in elves]

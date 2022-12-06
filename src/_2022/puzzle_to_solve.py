@@ -7,7 +7,7 @@ class PuzzleToSolve(ABC):
     """
     puzzle: Puzzle
     """
-    Upon init, set the puzzle. Year is 2022. Day is provided as class property
+    Upon init, set the puzzle. Year is _2022. Day is provided as class property
     """
     def __init__(self) -> None:
         self.puzzle = Puzzle(2022, self.day)
