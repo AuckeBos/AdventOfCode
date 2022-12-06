@@ -1,0 +1,29 @@
+from src._2022.puzzle_to_solve import PuzzleToSolve
+
+
+class Puzzle{day}(PuzzleToSolve):
+    @property
+    def day(self) -> int:
+        return {day}
+
+    @property
+    def test_input(self) -> str:
+        return None
+
+    @property
+    def test_answer_a(self):
+        return None
+
+    @property
+    def test_answer_b(self):
+        return None
+
+    def a(self, input: str):
+        return -1
+
+    def b(self, input: str):
+        return -1
+
+
+puzzle = Puzzle{day}()
+puzzle.solve()
