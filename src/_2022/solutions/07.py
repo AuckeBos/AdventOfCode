@@ -49,23 +49,27 @@ class Node:
         self.children[name] = child
         return self
 
-    def get_children_of_at_most_size(self, size: int):
+    def get_directories_of_at_most_size(self, size: int):
         result = []
-        for child in self.children.values():
-            result.extend(child.get_children_of_at_most_size(size))
-        if self.size_sum <= size and len(self.children) > 0:
+        if self.total_size <= size and self.is_dir:
             result.append(self)
+        for child in self.children.values():
+            result.extend(child.get_directories_of_at_most_size(size))
         return result
 
     @property
-    def size_sum(self):
-        return self.size + sum([x.size_sum for x in self.children.values()])
+    def is_dir(self):
+        return len(self.children) > 0
 
-    def get_children_dirs(self):
+    @property
+    def total_size(self):
+        return self.size + sum([x.total_size for x in self.children.values()])
+
+    def get_all_dirs(self):
         if self.children:
             result = [self]
             for child in self.children.values():
-                result.extend(child.get_children_dirs())
+                result.extend(child.get_all_dirs())
             return result
         return []
 
@@ -109,29 +113,50 @@ $ ls
     def test_answer_b(self):
         return 24933642
 
-    def a(self, input: str):
+    def create_tree(self, input: str):
+        """
+        Create the tree:
+        - Assert the first item is cd /
+        - Create the root note, and let it parse the rest of the input
+        """
         items = input.split('\n')
         first = items.pop(0)
         assert first == '$ cd /'
         root = Node(name='/')
         root.parse_input(items)
-        result = root.get_children_of_at_most_size(100000)
-        summed = sum([x.size_sum for x in result])
+        return root
+
+    def a(self, input: str):
+        """
+        Solve a):
+        - Create the tree
+        - From the tree, get all (nested) directories of at most size max_size
+        - Sum the sizes of the found dirs
+        """
+        max_size = 100000
+        tree = self.create_tree(input)
+        result = tree.get_directories_of_at_most_size(max_size)
+        summed = sum([x.total_size for x in result])
         return summed
 
     def b(self, input: str):
-        items = input.split('\n')
-        first = items.pop(0)
-        assert first == '$ cd /'
-        root = Node(name='/')
-        root.parse_input(items)
-        current_size = root.size_sum
-        current_free = 70000000 - current_size
+        """
+        Solve b):
+        - Create the tree
+        - Compute the size to free, based on the current free size
+        - Get the list of options to delete. These are the directories that are at least size to_free
+        - Get the smallest option, return its size
+        """
+        max_size = 70000000
+        wanted_free_size = 30000000
+        tree = self.create_tree(input)
+        current_size = tree.total_size
+        current_free = wanted_free_size - current_size
         to_free = 30000000 - current_free
-        options = [x for x in root.get_children_dirs() if x.size_sum >= to_free]
-        sorted_options = sorted(options, key=lambda x: x.size_sum)
+        options = [x for x in tree.get_all_dirs() if x.total_size >= to_free]
+        sorted_options = sorted(options, key=lambda x: x.total_size)
         item_to_delete = sorted_options[0]
-        return item_to_delete.size_sum
+        return item_to_delete.total_size
 
 
 puzzle = Puzzle7()
