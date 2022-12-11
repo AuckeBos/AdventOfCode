@@ -1,6 +1,7 @@
 from abc import ABC, abstractmethod
 from aocd.models import Puzzle
 
+
 class PuzzleToSolve(ABC):
     """
     Implement this class to solve a puzzle
@@ -9,14 +10,15 @@ class PuzzleToSolve(ABC):
     """
     Upon init, set the puzzle. Year is _2022. Day is provided as class property
     """
+
     def __init__(self) -> None:
         self.puzzle = Puzzle(2022, self.day)
         super().__init__()
 
-
     """
     The day of the puzzle 
     """
+
     @property
     @abstractmethod
     def day(cls) -> int:
@@ -25,14 +27,25 @@ class PuzzleToSolve(ABC):
     """
     The test input string. Provided in the puzzle description 
     """
+
     @property
     @abstractmethod
     def test_input(self) -> str:
         pass
 
     """
+    The alternative test input. Some puzzles have alternative inputs for b). In those cases, this method should 
+    be overridden. By default return test_input
+    """
+
+    @property
+    def test_input_alternative(self) -> str:
+        return self.test_input
+
+    """
     The answer to question a, given the test input. Provided in the puzzle description
     """
+
     @property
     @abstractmethod
     def test_answer_a(self):
@@ -41,6 +54,7 @@ class PuzzleToSolve(ABC):
     """
     The answer to question b, given the test input. Provided in the puzzle description
     """
+
     @property
     @abstractmethod
     def test_answer_b(self):
@@ -49,6 +63,7 @@ class PuzzleToSolve(ABC):
     """
     Returns the solution to puzzle a, given the actual input.
     """
+
     @abstractmethod
     def a(self, input: str):
         pass
@@ -56,10 +71,10 @@ class PuzzleToSolve(ABC):
     """
     Returns the solution to puzzle b, given the actual input.
     """
+
     @abstractmethod
     def b(self, input: str):
         pass
-
 
     """
     Solve an exercise:
@@ -72,25 +87,25 @@ class PuzzleToSolve(ABC):
     name: str
         The name of the puzzle to solve. Should be 'a' or 'b'
     """
-    def solve_exercise(self, name: str):
+
+    def solve_exercise(self, name: str, test_input: str):
         if name not in ['a', 'b']:
             raise Exception(f'Cannot solve excercise {name}')
-        input = self.test_input
         expected = self.__getattribute__(f'test_answer_{name}')
-        got = self.__getattribute__(name)(input)
+        got = self.__getattribute__(name)(test_input)
         if not expected == got:
             raise Exception(f'Cannot solve {name}: The test input answer is {expected}, while {name}() returned {got}')
-        
+
         input = self.puzzle.input_data
         answer = self.__getattribute__(name)(input)
         self.puzzle.__setattr__(f'answer_{name}', answer)
 
-
     """
     Solve both a) and b)
     """
+
     def solve(self):
-        self.solve_exercise('a')
+        self.solve_exercise('a', self.test_input)
         print("Solved puzzle A")
-        self.solve_exercise('b')
+        self.solve_exercise('b', self.test_input_alternative)
         print("Solved puzzle B")
