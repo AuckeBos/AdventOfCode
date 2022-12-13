@@ -6,6 +6,7 @@ from numpy.typing import NDArray
 
 from src._2022.puzzle_to_solve import PuzzleToSolve
 
+# Set to True to print matrix configurations during movement application
 DEBUG = False
 
 
