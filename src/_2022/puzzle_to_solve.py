@@ -65,7 +65,7 @@ class PuzzleToSolve(ABC):
     """
 
     @abstractmethod
-    def a(self, input: str):
+    def a(self, input_: str):
         pass
 
     """
@@ -73,7 +73,7 @@ class PuzzleToSolve(ABC):
     """
 
     @abstractmethod
-    def b(self, input: str):
+    def b(self, input_: str):
         pass
 
     """

@@ -35,8 +35,8 @@ CrZsJsPPZsGzwwsLwLmpwMDw"""
     Solve a:
     - 
     """
-    def a(self, input: str) -> int:
-        bags = input.split('\n')
+    def a(self, input_: str) -> int:
+        bags = input_.split('\n')
         result = 0
         for bag in bags:
             total = len(bag)
@@ -52,8 +52,8 @@ CrZsJsPPZsGzwwsLwLmpwMDw"""
     Solve b:
     - 
     """
-    def b(self, input: str) -> int:
-        bags = input.split('\n')
+    def b(self, input_: str) -> int:
+        bags = input_.split('\n')
         groups = [bags[i:i + 3] for i in range(0, len(bags), 3)]
         result = 0
         for group in groups:

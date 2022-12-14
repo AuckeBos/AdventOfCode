@@ -84,8 +84,8 @@ C Z"""
     - Compute the score for each game
     - Sum the result
     """
-    def a(self, input: str) -> int:
-        games = input.split("\n")
+    def a(self, input_: str) -> int:
+        games = input_.split("\n")
         scores = [self.compute_score(game) for game in games]
 
         return sum(scores)
@@ -114,8 +114,8 @@ C Z"""
     - Update each game, such that it is in the same format as the games in part a)
     - Solve equal to part a
     """
-    def b(self, input: str) -> int:
-        games = input.split("\n")
+    def b(self, input_: str) -> int:
+        games = input_.split("\n")
         updated_games = [self.update_game(game) for game in games]
         scores = [self.compute_score(game) for game in updated_games]
 

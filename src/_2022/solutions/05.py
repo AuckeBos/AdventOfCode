@@ -166,19 +166,19 @@ move 1 from 1 to 2
     def test_answer_b(self):
         return 'MCD'
 
-    def a(self, input: str):
+    def a(self, input_: str):
         """
         Solve a), by creating a board with CrateMover 9000, applying movements, and return the result
         """
-        board = Board(input, 9000)
+        board = Board(input_, 9000)
         board.apply_movements()
         return board.compute_result()
 
-    def b(self, input: str):
+    def b(self, input_: str):
         """
         Solve b), by creating a board with CrateMover 9001, applying movements, and return the result
         """
-        board = Board(input, 9001)
+        board = Board(input_, 9001)
         board.apply_movements()
         return board.compute_result()
 

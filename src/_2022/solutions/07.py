@@ -126,7 +126,7 @@ $ ls
         root.parse_input(items)
         return root
 
-    def a(self, input: str):
+    def a(self, input_: str):
         """
         Solve a):
         - Create the tree
@@ -134,12 +134,12 @@ $ ls
         - Sum the sizes of the found dirs
         """
         max_size = 100000
-        tree = self.create_tree(input)
+        tree = self.create_tree(input_)
         result = tree.get_directories_of_at_most_size(max_size)
         summed = sum([x.total_size for x in result])
         return summed
 
-    def b(self, input: str):
+    def b(self, input_: str):
         """
         Solve b):
         - Create the tree
@@ -149,7 +149,7 @@ $ ls
         """
         max_size = 70000000
         wanted_free_size = 30000000
-        tree = self.create_tree(input)
+        tree = self.create_tree(input_)
         current_size = tree.total_size
         current_free = wanted_free_size - current_size
         to_free = 30000000 - current_free

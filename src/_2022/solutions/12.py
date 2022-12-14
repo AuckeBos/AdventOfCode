@@ -55,21 +55,21 @@ class Map:
     ]
     max_val = 99999999
 
-    def __init__(self, inpt: str, climbing=True):
+    def __init__(self, input_: str, climbing=True):
         self.climbing = climbing
-        self.parse_input(inpt)
+        self.parse_input(input_)
 
-    def parse_input(self, inpt: str):
+    def parse_input(self, input_: str):
         """
         Parse the input. Replace all letters with the height of the letter. Split items by ' ' and replace newlines with
         ';'. Now np.matrix() reads correctly, then convert to ndarray. If self.climbing, set the height of the start
         node to self.goal: In this case we start at the end, hence the start isn't at height 0 but at hight max. Set
         distances to start to max, except for start. Set visited nodes to all false
         """
-        int_inpt = ' '.join(
-            [str(self.letter_to_height.index(x)) if x in self.letter_to_height else x for x in inpt]).replace(" \n",
+        int_input = ' '.join(
+            [str(self.letter_to_height.index(x)) if x in self.letter_to_height else x for x in input_]).replace(" \n",
                                                                                                               ";")
-        self.matrix = np.array(np.matrix(int_inpt))
+        self.matrix = np.array(np.matrix(int_input))
         if not self.climbing:
             self.matrix[tuple(np.argwhere(self.matrix == 0)[0])] = self.goal
         self.distances_to_start = np.full(self.matrix.shape, self.max_val, dtype=int)
@@ -164,20 +164,20 @@ abdefghi"""
     def test_answer_b(self):
         return 29
 
-    def a(self, input: str):
+    def a(self, input_: str):
         """
         Solve a)
         - Create map
         - Run Dijkstras (climbing)
         - Now get the distance_to_start of the Goal cell (which is thus the distnace of start to gaol)
         """
-        map = Map(input, True)
+        map = Map(input_, True)
         map.dijkstras()
         result = map.distances_to_start[tuple(np.argwhere(map.matrix == map.goal)[0])]
 
         return result
 
-    def b(self, input: str):
+    def b(self, input_: str):
         """
         Solve b)
         - Do so by running an inverse Dijkstras, hence computing the distance to End for all other cells.
@@ -188,8 +188,8 @@ abdefghi"""
         - Now create the 'options' matrix, which will have the distances_to_start for all cells that have a height of 1.
         - Get the cell with the lowest distance to end, and get its distance
         """
-        input = input.replace("S", "a").replace("E", "S")
-        map = Map(input, False)
+        input_ = input_.replace("S", "a").replace("E", "S")
+        map = Map(input_, False)
         map.dijkstras()
 
         options = map.distances_to_start.copy()

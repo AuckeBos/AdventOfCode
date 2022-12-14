@@ -27,8 +27,8 @@ class Puzzle4(PuzzleToSolve):
     Solve a:
     - 
     """
-    def a(self, input: str) -> int:
-        lst = input.split("\n")
+    def a(self, input_: str) -> int:
+        lst = input_.split("\n")
         pairs = [x.split(',') for x in lst]
         pairs_split = [[person.split('-') for person in pair] for pair in pairs]
         pairs_parsed = [[[int(side)for side in person]for person in duo]for duo in pairs_split]
@@ -49,8 +49,8 @@ class Puzzle4(PuzzleToSolve):
     Solve b:
     - 
     """
-    def b(self, input: str) -> int:
-        lst = input.split("\n")
+    def b(self, input_: str) -> int:
+        lst = input_.split("\n")
         pairs = [x.split(',') for x in lst]
         pairs_split = [[person.split('-') for person in pair] for pair in pairs]
         pairs_parsed = [[[int(side)for side in person]for person in duo]for duo in pairs_split]

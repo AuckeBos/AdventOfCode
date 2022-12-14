@@ -30,17 +30,17 @@ class Puzzle6(PuzzleToSolve):
                 return i + marker_size
         raise Exception("No marker found!")
 
-    def a(self, input: str):
+    def a(self, input_: str):
         """
         Solve a) by detecting the first marker of length 4
         """
-        return self.detect_marker(input, 4)
+        return self.detect_marker(input_, 4)
 
-    def b(self, input: str):
+    def b(self, input_: str):
         """
         Solve b) by detecting the first marker of length 14
         """
-        return self.detect_marker(input, 14)
+        return self.detect_marker(input_, 14)
 
 
 puzzle = Puzzle6()

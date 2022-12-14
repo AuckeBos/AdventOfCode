@@ -38,18 +38,18 @@ class Rope:
     knot_positions: List[NDArray] = None  # List of positions, each position is (x, y). Head is index 0
     knot_histories: List[List[Tuple[int, int]]] = field(default_factory=lambda: [])
 
-    def __init__(self, inpt: str, knot_count: int):
+    def __init__(self, input_: str, knot_count: int):
         self.knot_count = knot_count
-        self.movements = self.parse_input(inpt)
+        self.movements = self.parse_input(input_)
 
-    def parse_input(self, inpt: str):
+    def parse_input(self, input_: str):
         """
         Parse the input:
         - Split on newlines
         - Each line is a movement. Convert each movement to a list of steps. extend tuples
         - Tuples is a list of single step movements.
         """
-        lines = inpt.split("\n")
+        lines = input_.split("\n")
         tuples = []
         for line in lines:
             direction, amount = line.split(" ")
@@ -167,25 +167,25 @@ U 20"""
     def test_answer_b(self):
         return 36
 
-    def a(self, input: str):
+    def a(self, input_: str):
         """
         Solve a):
         - Create a rope with 2 knots
         - Apply the motions
         - Return the result
         """
-        rope = Rope(input, 2)
+        rope = Rope(input_, 2)
         result = rope.apply_motions()
         return result
 
-    def b(self, input: str):
+    def b(self, input_: str):
         """
         Solve a):
         - Create a rope with 10 knots
         - Apply the motions
         - Return the result
         """
-        rope = Rope(input, 10)
+        rope = Rope(input_, 10)
         result = rope.apply_motions()
         return result
 

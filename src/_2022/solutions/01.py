@@ -40,8 +40,8 @@ class Puzzle1(PuzzleToSolve):
     - Take the max Elve
     """
 
-    def a(self, input: str) -> int:
-        elves = input.split("\n\n")
+    def a(self, input_: str) -> int:
+        elves = input_.split("\n\n")
         elves_parsed = [elve.split("\n") for elve in elves]
         elves_cast = [[int(i) for i in elve] for elve in elves_parsed]
         elves_summed = [sum(elve) for elve in elves_cast]
@@ -59,8 +59,8 @@ class Puzzle1(PuzzleToSolve):
     - Sum the top 3
     """
 
-    def b(self, input: str) -> int:
-        elves = input.split("\n\n")
+    def b(self, input_: str) -> int:
+        elves = input_.split("\n\n")
         elves_parsed = [elve.split("\n") for elve in elves]
         elves_cast = [[int(i) for i in elve] for elve in elves_parsed]
         elves_summed = [sum(elve) for elve in elves_cast]

@@ -103,22 +103,22 @@ class Puzzle8(PuzzleToSolve):
     def test_answer_b(self):
         return 8
 
-    def a(self, input: str):
+    def a(self, input_: str):
         """
         Solve a):
         Create grid, parse input, count trees
         """
-        grid = Grid(input)
+        grid = Grid(input_)
         grid.parse_input()
         result = grid.count_trees()
         return result
 
-    def b(self, input: str):
+    def b(self, input_: str):
         """
         Solve b):
         Create grid, parse input, get best tree
         """
-        grid = Grid(input)
+        grid = Grid(input_)
         grid.parse_input()
         result = grid.get_best_tree()
         return result

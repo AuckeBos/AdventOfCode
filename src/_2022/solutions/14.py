@@ -31,11 +31,11 @@ class Cave:
 
     RELATIVE_POSITIONS = (np.array([1, 0]), np.array([1, -1]), np.array([1, 1]))
 
-    def __init__(self, inpt: str, is_endless=True):
+    def __init__(self, input_: str, is_endless=True):
         self.is_endless = is_endless
-        self.parse_input(inpt)
+        self.parse_input(input_)
 
-    def parse_input(self, inpt: str):
+    def parse_input(self, input_: str):
         """
         Parse the input string into self.cave:
         - Convert input to a list of endpoints
@@ -44,7 +44,7 @@ class Cave:
         - If the cave is not endless (in b)), increase bottom by 2, and place stones at the bottom row
         """
         matrix = np.zeros(self.CAVE_SIZE, dtype=int)
-        lines = [[endpoint.split(',') for endpoint in line.split(' -> ')] for line in inpt.split("\n")]
+        lines = [[endpoint.split(',') for endpoint in line.split(' -> ')] for line in input_.split("\n")]
         for line in lines:
             for i in range(len(line) - 1):
                 start, end = line[i], line[i + 1]
@@ -114,26 +114,26 @@ class Puzzle14(PuzzleToSolve):
     def test_answer_b(self):
         return 93
 
-    def a(self, input: str):
+    def a(self, input_: str):
         """
         Solve a):
         - Create an endless cave
         - Fill it
         - Return the amount of sand drops
         """
-        cave = Cave(input, True)
+        cave = Cave(input_, True)
         cave.fill()
         result = cave.amount_of_sand
         return result
 
-    def b(self, input: str):
+    def b(self, input_: str):
         """
         Solve a):
         - Create a non-endless cave
         - Fill it
         - Return the amount of sand drops
         """
-        cave = Cave(input, False)
+        cave = Cave(input_, False)
         cave.fill()
         result = cave.amount_of_sand
         return result

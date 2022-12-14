@@ -39,10 +39,10 @@ class Monkey:
 
     pattern = "Monkey \d+:\n  Starting items: (.*)\n  Operation: new = (.*)\n  Test: divisible by (\d+)\n    If true: throw to monkey (\d+)\n    If false: throw to monkey (\d+)"
 
-    def __init__(self, inpt: str):
-        self.parse_input(inpt)
+    def __init__(self, input_: str):
+        self.parse_input(input_)
 
-    def parse_input(self, inpt: str):
+    def parse_input(self, input_: str):
         """
         Parse the input, setting variables accordingly:
         - Use pattern to get values
@@ -52,7 +52,7 @@ class Monkey:
         - The test, as a lambda. Consumes worry level and returns true if it is divisible by divisor
         - test_{succeeds|fails}_monkey: To which monkey to pass if test is True/False
         """
-        groups = re.search(self.pattern, inpt).groups()
+        groups = re.search(self.pattern, input_).groups()
         items_str, operation_str, test_str, test_succeeds_str, test_fails_str = groups
         self.items = [int(x) for x in items_str.split(', ')]
         self.operation = lambda old: eval(operation_str)
@@ -67,16 +67,16 @@ class KeepAway:
     extreme_worry: bool
     lcm: int
 
-    def __init__(self, inpt: str, extreme_worry: bool):
+    def __init__(self, input_: str, extreme_worry: bool):
         self.extreme_worry = extreme_worry
-        self.parse_input(inpt)
+        self.parse_input(input_)
 
-    def parse_input(self, inpt: str):
+    def parse_input(self, input_: str):
         """
         - Parse the input, creating a list of monkeys
         - Save the LCM of all monkey.divisors in self
         """
-        monkeys_str = inpt.split("\n\n")
+        monkeys_str = input_.split("\n\n")
         self.monkeys = [Monkey(monkey_str) for monkey_str in monkeys_str]
         self.lcm = self.compute_lcm([m.divisor for m in self.monkeys])
 
@@ -173,26 +173,26 @@ Monkey 3:
     def test_answer_b(self):
         return 2713310158
 
-    def a(self, input: str):
+    def a(self, input_: str):
         """
         Compute a):
         - Create a game without extreme worryness
         - Play the game for 20 rounds
         - Return the monkey_business of the game
         """
-        game = KeepAway(input, False)
+        game = KeepAway(input_, False)
         game.play_rounds(20)
         result = game.monkey_business
         return result
 
-    def b(self, input: str):
+    def b(self, input_: str):
         """
         Compute a):
         - Create a game with extreme worryness
         - Play the game for 10000 rounds
         - Return the monkey_business of the game
         """
-        game = KeepAway(input, True)
+        game = KeepAway(input_, True)
         game.play_rounds(10000)
         result = game.monkey_business
         return result

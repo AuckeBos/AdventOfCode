@@ -165,13 +165,13 @@ noop"""
     def test_answer_b(self):
         return ''
 
-    def compute_register_changes(self, inpt: str):
+    def compute_register_changes(self, input_: str):
         """
         Compute a list of register changes, based on a list of ops:
         - If op is noop, append 0 - register doesn't change
         - If op is add, extend [0, change]: Takes 2 cycles
         """
-        operations = inpt.split("\n")
+        operations = input_.split("\n")
         register_changes = []
         for op in operations:
             if op == 'noop':
@@ -183,7 +183,7 @@ noop"""
                 raise Exception(f'Cannot parse operation {op}')
         return register_changes
 
-    def a(self, inpt: str):
+    def a(self, input_: str):
         """
         Solve a):
         - Compute register changes
@@ -191,7 +191,7 @@ noop"""
         - For each point, compute the strength: The register changes until that point + 1
         - Sum the result
         """
-        register_changes = self.compute_register_changes(inpt)
+        register_changes = self.compute_register_changes(input_)
         computation_points = [20 + i * 40 for i in range(len(register_changes) // 40)]
         signal_strenghts = []
         for p in computation_points:
@@ -199,7 +199,7 @@ noop"""
         result = sum(signal_strenghts)
         return result
 
-    def b(self, inpt: str):
+    def b(self, input_: str):
         """
         Solve b):
         - Compute register changes
@@ -212,7 +212,7 @@ noop"""
         - Ask the user to read the result, and input the 8 capital letters that should be read
         - Return user input
         """
-        register_changes = self.compute_register_changes(inpt)
+        register_changes = self.compute_register_changes(input_)
         crt_pos = 0
         X_pos = 1
         result = ''

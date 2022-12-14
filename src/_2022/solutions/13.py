@@ -89,14 +89,14 @@ class Puzzle13(PuzzleToSolve):
         # And return its comparison
         return Puzzle13.compair(left, right)
 
-    def a(self, input: str):
+    def a(self, input_: str):
         """
         Solve a):
         - Convert input to list of pairs, each item is a list. Use json.loads to parse string to list
         - Compare each pair. If left < right, increase result by i+1 (1-indexing)
         - Return result
         """
-        pairs_as_str = input.split("\n\n")
+        pairs_as_str = input_.split("\n\n")
         pairs_as_tuple = [pair.split("\n") for pair in pairs_as_str]
         pairs_parsed = [[json.loads(side) for side in pair] for pair in pairs_as_tuple]
         sum_indices_correctly_ordered_pairs = 0
@@ -105,14 +105,14 @@ class Puzzle13(PuzzleToSolve):
                 sum_indices_correctly_ordered_pairs += i + 1
         return sum_indices_correctly_ordered_pairs
 
-    def b(self, input: str):
+    def b(self, input_: str):
         """
         Solve b):
         - Remove empty lines, convert to list of packets. Append the two divider packets
         - Sort the list, using compair
         - Find the indices of the divider packets (1-based indexing), and multiply them
         """
-        input_wo_newlines = input.replace("\n\n", "\n")
+        input_wo_newlines = input_.replace("\n\n", "\n")
         divider_packets = [[[2]], [[6]]]
         packets = [json.loads(p) for p in input_wo_newlines.split("\n")] + divider_packets
         sorted_packets = sorted(packets, key=functools.cmp_to_key(self.compair))
