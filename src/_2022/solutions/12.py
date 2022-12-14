@@ -1,15 +1,10 @@
-import math
-import re
 import string
-import sys
-from copy import deepcopy
 from typing import Tuple
 
 import numpy as np
 from numpy.typing import NDArray
 
 from src._2022.puzzle_to_solve import PuzzleToSolve
-import string
 
 
 class Map:
@@ -68,7 +63,7 @@ class Map:
         """
         int_input = ' '.join(
             [str(self.letter_to_height.index(x)) if x in self.letter_to_height else x for x in input_]).replace(" \n",
-                                                                                                              ";")
+                                                                                                                ";")
         self.matrix = np.array(np.matrix(int_input))
         if not self.climbing:
             self.matrix[tuple(np.argwhere(self.matrix == 0)[0])] = self.goal

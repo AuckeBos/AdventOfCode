@@ -1,10 +1,10 @@
+import re
 from dataclasses import dataclass
 
 import numpy as np
 from numpy.typing import NDArray
 
 from src._2022.puzzle_to_solve import PuzzleToSolve
-import re
 
 
 @dataclass
@@ -72,11 +72,11 @@ class Grid:
             for j in range(self.matrix.shape[1]):
                 tree_len = self.matrix[i, j]
                 visible_trees[i, j] = (
-                        i == 0 or j == 0 or i == max_i or j == max_j or # Outer
-                        max(self.matrix[i, :j]) < tree_len or # Look left
-                        max(self.matrix[i, j + 1:]) < tree_len or # Look right
-                        max(self.matrix[:i, j]) < tree_len or # Look up
-                        max(self.matrix[i + 1:, j]) < tree_len # Look down
+                        i == 0 or j == 0 or i == max_i or j == max_j or  # Outer
+                        max(self.matrix[i, :j]) < tree_len or  # Look left
+                        max(self.matrix[i, j + 1:]) < tree_len or  # Look right
+                        max(self.matrix[:i, j]) < tree_len or  # Look up
+                        max(self.matrix[i + 1:, j]) < tree_len  # Look down
 
                 )
         return np.count_nonzero(visible_trees)

@@ -1,6 +1,6 @@
 import re
 from dataclasses import dataclass, field
-from typing import List, Optional, Dict
+from typing import List, Dict
 
 from src._2022.puzzle_to_solve import PuzzleToSolve
 

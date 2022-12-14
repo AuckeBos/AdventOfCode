@@ -1,8 +1,11 @@
-from src._2022.puzzle_to_solve import PuzzleToSolve
 import string
+
+from src._2022.puzzle_to_solve import PuzzleToSolve
+
 
 class Puzzle4(PuzzleToSolve):
     item_types = [*string.ascii_lowercase, *string.ascii_uppercase]
+
     @property
     def day(self) -> int:
         return 3
@@ -29,12 +32,11 @@ CrZsJsPPZsGzwwsLwLmpwMDw"""
             raise Exception(f'{item_type} is an invalid item type')
         return self.item_types.index(item_type) + 1
 
-
-
     """
     Solve a:
     - 
     """
+
     def a(self, input_: str) -> int:
         bags = input_.split('\n')
         result = 0
@@ -45,13 +47,13 @@ CrZsJsPPZsGzwwsLwLmpwMDw"""
             duplicate = list(set(left) & set(right))[0]
             result += self.get_priority(duplicate)
 
-
         return result
 
     """
     Solve b:
     - 
     """
+
     def b(self, input_: str) -> int:
         bags = input_.split('\n')
         groups = [bags[i:i + 3] for i in range(0, len(bags), 3)]

@@ -1,5 +1,4 @@
 import re
-from dataclasses import dataclass
 from functools import reduce
 from math import gcd
 from typing import List, Callable

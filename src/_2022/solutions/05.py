@@ -1,10 +1,10 @@
-from numpy.typing import NDArray
+import re
+import string
+
+import numpy as np
+import pandas as pd
 
 from src._2022.puzzle_to_solve import PuzzleToSolve
-import numpy as np
-import string
-import re
-import pandas as pd
 
 
 class Board:

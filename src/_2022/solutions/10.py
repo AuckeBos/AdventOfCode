@@ -1,5 +1,3 @@
-from typing import List
-
 from src._2022.puzzle_to_solve import PuzzleToSolve
 
 
@@ -225,7 +223,7 @@ noop"""
             X_pos += change
             crt_pos = (crt_pos + 1) % 40
         result = result.replace('.', ' ').replace("#", '.')
-        lines = [result[i:i+40] for i in range(0, len(register_changes), 40)]
+        lines = [result[i:i + 40] for i in range(0, len(register_changes), 40)]
         for line in lines:
             print(line)
         # Manually read the output, and submit the result

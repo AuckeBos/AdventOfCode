@@ -27,11 +27,12 @@ class Puzzle4(PuzzleToSolve):
     Solve a:
     - 
     """
+
     def a(self, input_: str) -> int:
         lst = input_.split("\n")
         pairs = [x.split(',') for x in lst]
         pairs_split = [[person.split('-') for person in pair] for pair in pairs]
-        pairs_parsed = [[[int(side)for side in person]for person in duo]for duo in pairs_split]
+        pairs_parsed = [[[int(side) for side in person] for person in duo] for duo in pairs_split]
 
         cnt = 0
         for pair in pairs_parsed:
@@ -40,20 +41,21 @@ class Puzzle4(PuzzleToSolve):
             right_low = pair[1][0]
             right_high = pair[1][1]
 
-            if (left_low <= right_low and left_high >= right_high) or (right_low <= left_low and right_high >= left_high):
+            if (left_low <= right_low and left_high >= right_high) or (
+                    right_low <= left_low and right_high >= left_high):
                 cnt += 1
         return cnt
-
 
     """
     Solve b:
     - 
     """
+
     def b(self, input_: str) -> int:
         lst = input_.split("\n")
         pairs = [x.split(',') for x in lst]
         pairs_split = [[person.split('-') for person in pair] for pair in pairs]
-        pairs_parsed = [[[int(side)for side in person]for person in duo]for duo in pairs_split]
+        pairs_parsed = [[[int(side) for side in person] for person in duo] for duo in pairs_split]
 
         cnt = 0
         for pair in pairs_parsed:
