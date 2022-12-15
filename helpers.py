@@ -73,4 +73,4 @@ def xys_to_rcs(x_start: int | str, y_start: int | str, x_end: int | str = None, 
     x_end += 1
     y_end += 1
 
-    return range(y_start, y_end), range(x_start, x_end)
+    return list(range(y_start, y_end)), list(range(x_start, x_end))

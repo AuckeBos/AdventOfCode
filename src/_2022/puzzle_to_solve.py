@@ -76,6 +76,11 @@ class PuzzleToSolve(ABC):
     def b(self, input_: str):
         pass
 
+    def test_a(self):
+        return self.a(self.test_input)
+
+    def test_b(self):
+        return self.b(self.test_input)
     """
     Solve an exercise:
     - Run the implementation, given the test input.
@@ -92,7 +97,8 @@ class PuzzleToSolve(ABC):
         if name not in ['a', 'b']:
             raise Exception(f'Cannot solve excercise {name}')
         expected = self.__getattribute__(f'test_answer_{name}')
-        got = self.__getattribute__(name)(test_input)
+        got = self.__getattribute__(f'test_{name}')()
+
         if not expected == got:
             raise Exception(f'Cannot solve {name}: The test input answer is {expected}, while {name}() returned {got}')
 
