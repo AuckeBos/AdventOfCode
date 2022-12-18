@@ -18,10 +18,10 @@ class Puzzle{day}(PuzzleToSolve):
     def test_answer_b(self):
         return None
 
-    def a(self, input: str):
+    def a(self, input_: str):
         return -1
 
-    def b(self, input: str):
+    def b(self, input_: str):
         return -1
 
 
