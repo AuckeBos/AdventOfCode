@@ -1,8 +1,11 @@
 [tool.poetry]
-name = "AdventOfCode"
+name = "adventofcode"
 version = "0.1.0"
 description = "Personal solutions to the puzzles of Advent of Code"
 authors = ["Aucke Bos <aucke.bos97@gmail.com>"]
+packages = [
+    { include = "src"},
+]
 
 [tool.poetry.dependencies]
 python = ">=3.8, <3.11"
