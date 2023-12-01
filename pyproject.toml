@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "Personal solutions to the puzzles of Advent of Code"
 authors = ["Aucke Bos <aucke.bos97@gmail.com>"]
 packages = [
-    { include = "src"},
+    { include = "adventofcode"},
 ]
 
 [tool.poetry.dependencies]
@@ -17,9 +17,13 @@ pandas = "^1.5.2"
 browser-cookie3 = "^0.19.1"
 word2number = "^1.1"
 nltk = "^3.8.1"
+click = "^8.1.7"
 
 [tool.poetry.dev-dependencies]
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+adventofcode = "adventofcode.main:cli"

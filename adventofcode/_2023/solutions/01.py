@@ -1,4 +1,4 @@
-from src._2023.puzzle_to_solve import PuzzleToSolve
+from adventofcode._2023.puzzle_to_solve import PuzzleToSolve
 from word2number import w2n
 
 class Puzzle1(PuzzleToSolve):
