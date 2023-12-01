@@ -14,6 +14,9 @@ numpy = "^1.21.4"
 black = "^21.12b0"
 advent-of-code-data = "^1.1.1"
 pandas = "^1.5.2"
+browser-cookie3 = "^0.19.1"
+word2number = "^1.1"
+nltk = "^3.8.1"
 
 [tool.poetry.dev-dependencies]
 

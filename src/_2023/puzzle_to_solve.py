@@ -79,7 +79,7 @@ class PuzzleToSolve(ABC):
         return self.a(self.test_input)
 
     def test_b(self):
-        return self.b(self.test_input)
+        return self.b(self.test_input_alternative)
 
     def solve_exercise(self, name: str, test_input: str):
         """
