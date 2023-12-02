@@ -66,6 +66,9 @@ class Bag:
     
 
 class Grab:
+    """
+    A grab consists of a number of cubes of a certain color.
+    """
     cubes: Dict[str, int]
     def __init__(self, str_repr: str) -> None:
         """
@@ -217,12 +220,18 @@ Game 5: 6 red, 1 blue, 3 green; 2 blue, 1 red, 2 green"""
         return 2286
 
     def a(self, input_: str):
+        """
+        For an input list of games, find the sum of the ids of the games that are possible for the bag.
+        """
         bag = Bag({"red": 12, "green": 13, "blue": 14})
         games = [Game(game_repr) for game_repr in input_.splitlines()]
         possible_games = [game for game in games if game.is_possible_for(bag)]
         return sum([game.id for game in possible_games])
         
     def b(self, input_: str):
+        """
+        For an input list of games, find the sum of the powers of the smallest bags that can be used to play each games.
+        """
         games = [Game(game_repr) for game_repr in input_.splitlines()]
         smallest_bags = [game.find_smallest_bag() for game in games]
         return sum([bag.power() for bag in smallest_bags])
