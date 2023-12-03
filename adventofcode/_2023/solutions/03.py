@@ -2,52 +2,35 @@ import math
 from adventofcode._templates.puzzle_to_solve import PuzzleToSolve
 import numpy as np
 
+from adventofcode.helpers.base_matrix import BaseMatrix
 
-class Matrix:
-    data: np.ndarray
+
+class Matrix(BaseMatrix):
     
     def __init__(self, input_: str):
-        # Create numpy character matrix from input
-        self.matrix = np.array([list(line) for line in input_.split("\n")])
-        # Surround matrix with ".", to make sure we don't get index errors
-        self.matrix = np.pad(self.matrix, 1, constant_values=".")
+        self.parse_input(input_, ".")
     
     def find_part_numbers(self):
         return [
             self.get_full_part_number(i, j)
-            for i in range(1, self.matrix.shape[0] - 1)
-            for j in range(1, self.matrix.shape[1] - 1)
+            for i, j in self.iter_topleft_to_bottomright()
             if self.is_start_of_part_number(i, j)
         ]
 
     def find_gear_ratios(self):
         return [
             self.get_gear_ratio(i, j)
-            for i in range(1, self.matrix.shape[0] - 1)
-            for j in range(1, self.matrix.shape[1] - 1)
+            for i, j in self.iter_topleft_to_bottomright()
             if self.is_gear(i, j)
         ]
 
-        
-    
-    def adjacent_fields(self, i: int, j: int):
-        """
-        Get the adjacent fields of a given index
-        """
-        return [
-            (i - 1, j - 1), (i - 1, j), (i - 1, j + 1),
-            (i, j - 1), (i, j + 1),
-            (i + 1, j - 1), (i + 1, j), (i + 1, j + 1)
-        ]
-    
-    
     def is_adjacent_to_symbol(self, i: int, j: int) -> bool:
         """
          Check if a given index is adjacent to a symbol (not a digit or ".")
          """
         return any(
             [
-                (not self.matrix[x, y].isdigit()) and (not self.matrix[x, y] == ".") for x, y in self.adjacent_fields(i, j)
+                (not self.data[x, y].isdigit()) and (not self.data[x, y] == ".") for x, y in self.adjacent_fields(i, j)
             ]
         )
     
@@ -65,7 +48,7 @@ class Matrix:
         A gear is a "*" with exactly 2 adjacent part numbers
         """
         return (
-            self.matrix[i, j] == "*" and
+            self.data[i, j] == "*" and
             len(self.get_adjacent_part_numbers(i, j))  == 2
         )
     
@@ -79,18 +62,18 @@ class Matrix:
         """
         Get the full part number, given index i,j is the start of the part number
         """
-        if not self.matrix[i, j].isdigit():
+        if not self.data[i, j].isdigit():
             raise ValueError(f"Index {i}, {j} is not a digit, hence cannot be part of a part number")
         j_iter = j
-        part_number = self.matrix[i, j]
+        part_number = self.data[i, j]
         # Seek left
-        while self.matrix[i, j_iter - 1].isdigit():
-            part_number = self.matrix[i, j_iter - 1] + part_number
+        while self.data[i, j_iter - 1].isdigit():
+            part_number = self.data[i, j_iter - 1] + part_number
             j_iter -= 1
         # Seek right
         j_iter = j
-        while self.matrix[i, j_iter + 1].isdigit():
-            part_number += self.matrix[i, j_iter + 1]
+        while self.data[i, j_iter + 1].isdigit():
+            part_number += self.data[i, j_iter + 1]
             j_iter += 1
         return int(part_number)
 
@@ -101,7 +84,7 @@ class Matrix:
         - Self is adjacent to a symbol or Next is part of a part number
         """
         return (
-            self.matrix[i, j].isdigit() # Self is digit
+            self.data[i, j].isdigit() # Self is digit
             and
             (
                 self.is_adjacent_to_symbol(i, j) # Self is adjacent to a symbol
@@ -115,7 +98,7 @@ class Matrix:
         i,j is the start of a part number if we have no digit on the left, and i,j is part of a part number
         """
         return (
-            not self.matrix[i, j - 1].isdigit() # Left is not a digit (this would mean i,j is not the start)
+            not self.data[i, j - 1].isdigit() # Left is not a digit (this would mean i,j is not the start)
             and self.is_part_of_part_number(i, j) # i,j is part of a part number
         )
         
