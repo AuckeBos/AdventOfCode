@@ -1,6 +1,6 @@
 import math
 from typing import Dict, List
-from adventofcode._templates.puzzle_to_solve import PuzzleToSolve
+from adventofcode._templates.v20231201.puzzle_to_solve import PuzzleToSolve
 import re
 
 class Bag:

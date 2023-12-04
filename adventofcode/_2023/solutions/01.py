@@ -1,10 +1,14 @@
-from adventofcode._2023.puzzle_to_solve import PuzzleToSolve
+from adventofcode._templates.v20231201.puzzle_to_solve import PuzzleToSolve
 from word2number import w2n
 
 class Puzzle1(PuzzleToSolve):
     @property
     def day(self) -> int:
         return 1
+
+    @property
+    def year(self) -> int:
+        return 2023
 
     @property
     def test_input(self) -> str:

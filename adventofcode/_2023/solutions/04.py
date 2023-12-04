@@ -1,5 +1,6 @@
 from collections import defaultdict
-from adventofcode._templates.puzzle_to_solve import PuzzleToSolve
+from typing import List, Set
+from adventofcode._templates.v20231204.puzzle_to_solve import PuzzleToSolve
 import re
 
 class Puzzle4(PuzzleToSolve):
@@ -28,7 +29,7 @@ Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11"""
     def test_answer_b(self):
         return 30
     
-    def get_matches(self, input_: str):
+    def parse_input(self, input_: str) -> List[Set[int]]:
         """
         Get the matches between the winning numbers and the own numbers.
         Result is a list of sets, where each set contains the numbers that match in that scratch card
@@ -46,24 +47,22 @@ Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11"""
             matches.append(set(winning_nrs).intersection(set(own_nrs)))
         return matches
 
-    def a(self, input_: str):
+    def a(self, input_: List[Set[int]]) -> int:
         """
         Sum the points of each card. A point scores 2^(n-1) points, where n is the number of matches
         """
-        data = self.get_matches(input_)
         points = []
-        for matches in data:
+        for matches in input_:
             points.append(int(2**(len(matches) - 1)) if matches else 0)
         return sum(points)
 
-    def b(self, input_: str):
+    def b(self, input_: List[Set[int]]):
         """
         Count the total nr of scratch cards. Each card duplicates the n cards after it, where n is the number of matches
         """
-        data = self.get_matches(input_)
         # One original card for each
-        counts = {str(i): 1 for i in range(len(data))}
-        for i, matches in enumerate(data):
+        counts = {str(i): 1 for i in range(len(input_))}
+        for i, matches in enumerate(input_):
             for j in range(1, len(matches) + 1):
                 # Increase the count for the jth card after i, with the count (original + copy) of the ith card
                 counts[str(i + j)] += counts[str(i)]

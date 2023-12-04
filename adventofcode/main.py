@@ -3,7 +3,7 @@ import logging
 import os
 import subprocess
 import click
-from adventofcode.helpers.config import TEMPLATES_DIR, SOLUTIONS_DIR
+from adventofcode.helpers.config import TEMPLATE_VERSION, TEMPLATES_DIR, SOLUTIONS_DIR
 # Set debug level to info
 logging.basicConfig(level=logging.INFO)
 
@@ -27,6 +27,7 @@ def create_file(year: int, day: int) -> str:
         source = f.read()
     source = source.replace("{day}", str(day))
     source = source.replace("{year}", str(year))
+    source = source.replace("{template_version}", TEMPLATE_VERSION)
     destination_file = SOLUTIONS_DIR / f"{day:02d}.py"
     if os.path.exists(destination_file):
         logging.info('File %s not created, as it yet exists', destination_file)
