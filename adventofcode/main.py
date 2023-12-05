@@ -3,7 +3,7 @@ import logging
 import os
 import subprocess
 import click
-from adventofcode.helpers.config import TEMPLATE_VERSION, TEMPLATES_DIR, SOLUTIONS_DIR
+from adventofcode.helpers.config import TEMPLATE_VERSION, TEMPLATES_DIR, solutions_dir
 # Set debug level to info
 logging.basicConfig(level=logging.INFO)
 
@@ -28,7 +28,7 @@ def create_file(year: int, day: int) -> str:
     source = source.replace("{day}", str(day))
     source = source.replace("{year}", str(year))
     source = source.replace("{template_version}", TEMPLATE_VERSION)
-    destination_file = SOLUTIONS_DIR / f"{day:02d}.py"
+    destination_file = solutions_dir(year) / f"{day:02d}.py"
     if os.path.exists(destination_file):
         logging.info('File %s not created, as it yet exists', destination_file)
     else:
@@ -40,17 +40,24 @@ def create_file(year: int, day: int) -> str:
 
 @cli.command()
 @click.option(
+    "-y",
+    "--year",
+    type=int,
+    required=False,
+    default=datetime.datetime.today().year,
+    help="The year to create a file for",
+)
+@click.option(
     "-d",
     "--day",
     type=int,
-    required=datetime.datetime.today() != 12,
+    required=datetime.datetime.today().month != 12,
     default=datetime.datetime.today().day if datetime.datetime.today().month == 12 else None,
     help="The day to create a file for",
 )
-def start(day: int):
+def start(year: int, day: int):
     """
     Start a day. Ie create the file for the day, and open it in VS Code
     """
-    year = datetime.datetime.today().year
     path = create_file(year, day)
     os.system(f"code -r {path}")
