@@ -1,3 +1,4 @@
+from typing import List, Tuple, Union
 import numpy as np
 
 
@@ -25,12 +26,29 @@ class BaseMatrix:
             for j in range(1, self.data.shape[1] - 1):
                 yield i, j
     
-    def adjacent_fields(self, i: int, j: int):
+    def fields_to_values(self, fields: List[Tuple[int, int]]):
+        """
+        Get the values of a list of fields
+        """
+        return [self.data[i, j] for i, j in fields]
+    
+    def adjacent_fields(self, i: int, j: int, as_values: bool = False) -> List[Union[Tuple[int, int], str]]:
         """
         Get the adjacent fields of a given index
+        
+        Args:
+            i: row index
+            j: column index
+            as_values: return values instead of indices
+            
+        Returns:
+            List of indices (tuples) or values (strings)
         """
-        return [
+        indices = [
             (i - 1, j - 1), (i - 1, j), (i - 1, j + 1),
             (i, j - 1), (i, j + 1),
             (i + 1, j - 1), (i + 1, j), (i + 1, j + 1)
         ]
+        if as_values:
+            return self.fields_to_values(indices)
+        return indices
