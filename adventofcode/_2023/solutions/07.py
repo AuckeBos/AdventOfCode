@@ -36,8 +36,6 @@ class Hand:
     
     use_jokers: bool = False
     
-    
-    
     def __init__(self, cards: str, bid: int):
         self.cards = cards
         self.bid = bid
