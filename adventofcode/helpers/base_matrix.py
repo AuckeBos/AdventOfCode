@@ -32,23 +32,27 @@ class BaseMatrix:
         """
         return [self.data[i, j] for i, j in fields]
     
-    def adjacent_fields(self, i: int, j: int, as_values: bool = False) -> List[Union[Tuple[int, int], str]]:
+    def adjacent_fields(self, i: int, j: int, as_values: bool = False, diagonal: bool = True) -> Union[List[Tuple[int, int]], List[str]]:
         """
         Get the adjacent fields of a given index
         
         Args:
             i: row index
             j: column index
+            diagonal: include diagonal fields
             as_values: return values instead of indices
             
         Returns:
             List of indices (tuples) or values (strings)
         """
         indices = [
-            (i - 1, j - 1), (i - 1, j), (i - 1, j + 1),
-            (i, j - 1), (i, j + 1),
-            (i + 1, j - 1), (i + 1, j), (i + 1, j + 1)
+            (i - 1, j), (i, j - 1), (i, j + 1), (i + 1, j)
         ]
+        if diagonal:
+            indices += [
+                (i - 1, j - 1), (i - 1, j + 1),
+                (i + 1, j - 1), (i + 1, j + 1)
+            ]
         if as_values:
             return self.fields_to_values(indices)
         return indices
