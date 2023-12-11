@@ -12,11 +12,16 @@ class BaseMatrix:
     def parse_input(self, input_: str, pad: str = "."):
         """
         Input string to numpy matrix. Surround matrix with pad, to make sure we don't get index errors
+        
+        Args:
+            input_: input string
+            pad: padding to add to the matrix. If None, no padding is added
         """
         # Create numpy character matrix from input
         self.data = np.array([list(line) for line in input_.split("\n")])
-        # Surround matrix with ".", to make sure we don't get index errors
-        self.data = np.pad(self.data, 1, constant_values=pad)
+        if pad is not None:
+            # Surround matrix with ".", to make sure we don't get index errors
+            self.data = np.pad(self.data, 1, constant_values=pad)
     
     def iter_topleft_to_bottomright(self):
         """
