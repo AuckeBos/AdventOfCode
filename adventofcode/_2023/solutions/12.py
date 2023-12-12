@@ -42,19 +42,18 @@ class Puzzle12(PuzzleToSolve):
     
     # This annotation makes b) possible.
     @cache
-    def nr_of_possibilities(self, springs: str, groups: Tuple, allow_damaged: bool = True, allow_operational: bool = True) -> int:
+    def nr_of_possibilities(self, springs: str, groups: tuple, allow_damaged: bool = True, allow_operational: bool = True) -> int:
         """
         Find the number of possible arrangements for the given springs and groups.
         
         :param springs: The springs that are to be checked.
-        :param groups: The groups of damaged springs. It's a tuple, to allow caching. Converted to list in the function.
+        :param groups: The groups of damaged springs.
         :param allow_damaged: Whether the first spring is allwoed to be damaged.
         :param allow_operational: Whether the first spring is allowed to be operational.
         
         :return: The number of possible arrangements.
         
         """
-        groups = list(groups)
         # No more springs left
         if not springs:
             # We have a match if there need to be no more damaged springs
@@ -69,14 +68,15 @@ class Puzzle12(PuzzleToSolve):
             # If we have an unallowed damaged spring, or we have a damaged spring, but there are no more damaged springs expected, no match
             if not allow_damaged or not len(groups):
                 return 0
-            new_group = groups.pop(0) - 1
+            new_group = groups[0] - 1
+            groups = groups[1:]
             # This if should never be true
             if new_group < 0:
                 raise ValueError("Group of length 0")
             # If we still expect more damaged springs in this group
             if new_group > 0:
                 # Re-insert the decremented group
-                groups.insert(0, new_group)
+                groups = (new_group, *groups)
                 # We expect more damaged springs in the current group. Hence damaged is allowed, but operational is not
                 allow_damaged = True
                 allow_operational = False
