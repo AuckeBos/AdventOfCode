@@ -6,8 +6,13 @@ class BaseMatrix:
     """
     Matrix class, to be used as a base class for other matrix classes
     Parses input into a numpy matrix, and provides some helper functions
+    
+    Attributes:
+        data: the numpy matrix
+        pad: the padding used to surround the matrix
     """
     data: np.ndarray
+    pad: str
     
     def parse_input(self, input_: str, pad: str = "."):
         """
@@ -17,6 +22,7 @@ class BaseMatrix:
             input_: input string
             pad: padding to add to the matrix. If None, no padding is added
         """
+        self.pad = pad
         # Create numpy character matrix from input
         self.data = np.array([list(line) for line in input_.split("\n")])
         if pad is not None:
@@ -25,10 +31,11 @@ class BaseMatrix:
     
     def iter_topleft_to_bottomright(self):
         """
-        Yield all indices from top left to bottom right
+        Yield all indices from top left to bottom right. Do not iterate of the pad
         """
-        for i in range(1, self.data.shape[0] - 1):
-            for j in range(1, self.data.shape[1] - 1):
+        start_at = 1 if self.pad is not None else 0
+        for i in range(start_at, self.data.shape[0] - (start_at)):
+            for j in range(start_at, self.data.shape[1] - (start_at)):
                 yield i, j
     
     def fields_to_values(self, fields: List[Tuple[int, int]]):
