@@ -68,3 +68,6 @@ class BaseMatrix:
         if as_values:
             return self.fields_to_values(indices)
         return indices
+
+    def __repr__(self):
+        return "\n".join(["".join(line) for line in self.data])
