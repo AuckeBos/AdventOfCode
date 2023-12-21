@@ -32,6 +32,18 @@ class PuzzleToSolve(ABC):
         The year of the puzzle 
         """
         return None
+    
+    @property
+    def extra_kwargs(self) -> dict:
+        """
+        Extra kwargs to pass to the puzzle. Indexed on puzzle type
+        """
+        return {
+            "a_test": {},
+            "b_test": {},
+            "a": {},
+            "b": {}
+        }
 
     @property
     @abstractmethod
@@ -92,10 +104,10 @@ class PuzzleToSolve(ABC):
         pass
 
     def test_a(self):
-        return self.a(self.parse_input(self.test_input))
+        return self.a(self.parse_input(self.test_input), **self.extra_kwargs['a_test'])
 
     def test_b(self):
-        return self.b(self.parse_input(self.test_input_alternative))
+        return self.b(self.parse_input(self.test_input_alternative), **self.extra_kwargs['b_test'])
 
     def solve_exercise(self, name: str):
         """
@@ -118,7 +130,7 @@ class PuzzleToSolve(ABC):
             raise AssertionError(f'Cannot solve {name}: The test input answer is {expected}, while {name}() returned {got}')
 
         puzzle_input = self.parse_input(self.puzzle.input_data)
-        answer = getattr(self, name)(puzzle_input)
+        answer = getattr(self, name)(puzzle_input, **self.extra_kwargs[name])
         setattr(self.puzzle, f'answer_{name}', answer)
 
 
