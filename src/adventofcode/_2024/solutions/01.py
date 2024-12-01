@@ -1,7 +1,8 @@
 from collections import defaultdict
-from typing import List, Tuple
+from typing import List
 
 from adventofcode._templates.v20231204.puzzle_to_solve import PuzzleToSolve
+from adventofcode.helpers.parsing import as_cols
 
 
 class Puzzle1(PuzzleToSolve):
@@ -30,23 +31,27 @@ class Puzzle1(PuzzleToSolve):
     def test_answer_b(self):
         return 31
 
-    def parse_input(self, input_: str) -> Tuple[List[int], List[int]]:
-        l, r = [], []
-        for line in input_.split("\n"):
-            splitted = line.split("   ")
-            l.append(int(splitted[0]))
-            r.append(int(splitted[-1]))
+    def parse_input(self, input_: str) -> List[List[int]]:
+        """
+        Parse input to cols. Sort the cols and return them.
+        """
+        l, r = as_cols(input_, sep="   ")
         return sorted(l), sorted(r)
 
-    def a(self, input: Tuple[List[int], List[int]]) -> int:
+    def a(self, input: List[List[int]]) -> int:
+        """
+        Sum the absolute differences between the two lists.
+        """
         return sum(abs(x - y) for x, y in zip(*input))
 
-    def b(self, input: Tuple[List[int], List[int]]) -> int:
+    def b(self, input: List[List[int]]) -> int:
+        """
+        Create lookup for r. Then sum the product of the nums and their counts in r.
+        """
         lookup = defaultdict(lambda: 0)
-        l, r = input
-        for n in r:
+        for n in input[1]:
             lookup[n] += 1
-        return sum(n * lookup[n] for n in l)
+        return sum(n * lookup[n] for n in input[0])
 
 
 puzzle = Puzzle1()
