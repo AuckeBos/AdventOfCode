@@ -1,14 +1,14 @@
 from collections import defaultdict
 from typing import List, Tuple
+
 from adventofcode._templates.v20231204.puzzle_to_solve import PuzzleToSolve
-from adventofcode.helpers.base_matrix import BaseMatrix
 
 
 class Puzzle1(PuzzleToSolve):
     @property
     def day(self) -> int:
         return 1
-    
+
     @property
     def year(self) -> int:
         return 2024

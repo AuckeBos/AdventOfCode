@@ -66,6 +66,8 @@ regex==2024.11.6
     # via nltk
 requests==2.32.3
     # via advent-of-code-data
+ruff==0.8.1
+    # via adventofcode
 setuptools==75.3.0
     # via adventofcode
 six==1.16.0
