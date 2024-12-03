@@ -7,8 +7,8 @@ dependencies = [
     "bitstring>=3.1.9,<4.0.0",
     "numpy>=1.21.4,<2.0.0",
     "black>=21.12b0,<22.0",
-    "advent-of-code-data>=1.1.1,<2.0.0",
-    "pandas>=1.5.2,<2.0.0",
+    "advent-of-code-data>=1.1.1",
+    "pandas>=1.5.2",
     "browser-cookie3>=0.19.1",
     "word2number>=1.1,<2.0",
     "nltk>=3.8.1,<4.0.0",
@@ -16,7 +16,7 @@ dependencies = [
     "setuptools>=75.3.0",
     "ruff>=0.8.1",
 ]
-requires-python = ">=3.8,<3.11"
+requires-python = ">=3.12"
 
 [tool]
 

@@ -1,5 +1,3 @@
-from typing import List
-
 import numpy as np
 
 from adventofcode._templates.v20231204.puzzle_to_solve import PuzzleToSolve
@@ -38,7 +36,7 @@ class Puzzle2(PuzzleToSolve):
     def parse_input(self, input_: str) -> np.matrix:
         return as_matrix(input_, padding=-1)
 
-    def compute_validity(self, matrix: np.matrix) -> List[int]:
+    def compute_validity(self, matrix: np.matrix) -> list[int]:
         """
         Copy the matrix, overlay shifted by one, and compute the requirements for a valid row.
         Return the indices of the valid rows (the rows where all cells are valid)
