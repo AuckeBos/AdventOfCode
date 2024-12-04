@@ -60,7 +60,7 @@ class Map(BaseMatrix):
         return self.visited[self.end]
 
     def get_neighbours(self) -> List[Tuple[int, int]]:
-        result = self.adjacent_fields(*self.active_node, False)
+        result = self.adjacent_fields(*self.active_node, as_values=False)
         # Prevent going back
         result = [(r, c) for r, c in result if (r, c) != self.history[-1]]
         # Remove out of bounds
