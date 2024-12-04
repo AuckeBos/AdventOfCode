@@ -1,3 +1,4 @@
+from functools import reduce
 from typing import List, Tuple, Union
 
 import numpy as np
@@ -75,6 +76,30 @@ class BaseMatrix:
         if as_values:
             return self.fields_to_values(indices)
         return indices
+
+    def direction(self, p1: Tuple[int, int], p2: Tuple[int, int]) -> Tuple[int, int]:
+        """
+        Get the direction from p1 to p2
+        """
+        return np.sign(p2[0] - p1[0]), np.sign(p2[1] - p1[1])
+
+    def add(self, *ps: Tuple[int, int]) -> Tuple[int, int]:
+        """
+        Add multiple points
+        """
+        return reduce(lambda x, y: (x[0] + y[0], x[1] + y[1]), ps)
+
+    def subtract(self, ps: Tuple[int, int]) -> Tuple[int, int]:
+        """
+        Subtract multiple points
+        """
+        return reduce(lambda x, y: (x[0] - y[0], x[1] - y[1]), ps)
+
+    def invert(self, p: Tuple[int, int], *, row: bool, col: bool) -> Tuple[int, int]:
+        """
+        Invert a point, in row and/or column
+        """
+        return (p[0] * (-1 if row else 1), p[1] * (-1 if col else 1))
 
     def __repr__(self):
         return "\n".join(["".join(line) for line in self.data])
