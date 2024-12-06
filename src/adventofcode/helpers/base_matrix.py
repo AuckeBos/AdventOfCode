@@ -1,15 +1,16 @@
 from dataclasses import dataclass
-from typing import Generator, List, Tuple
+from enum import Enum
+from typing import Any, Generator, List, Tuple, Union
 
 import numpy as np
-from pydantic import BaseModel, Field
 
 
-class Position(BaseModel):
+@dataclass
+class Position:
     i: int
     j: int
 
-    def __add__(self, other) -> "Position":
+    def __add__(self, other: Union["Position", "Direction"]) -> "Position":
         return Position(self.i + other.i, self.j + other.j)
 
     @property
@@ -52,12 +53,10 @@ class Position(BaseModel):
         ]
 
 
-@dataclass
 class Direction(Position):
-    i: int = Field(None, ge=-1, le=1)
-    j: int = Field(None, ge=-1, le=1)
-
     def __post_init__(self):
+        if abs(self.i) > 1 or abs(self.j) > 1:
+            raise ValueError("i and j cannot be greater than 1")
         if self.i == 0 and self.j == 0:
             raise ValueError("i and j cannot both be 0")
 
@@ -80,6 +79,13 @@ class Direction(Position):
         return Direction(-self.i, -self.j)
 
 
+class Directions(Enum):
+    TOP: Direction = Direction(-1, 0)
+    RIGHT: Direction = Direction(0, 1)
+    BOTTOM: Direction = Direction(1, 0)
+    LEFT: Direction = Direction(0, -1)
+
+
 class BaseMatrix:
     """
     Matrix class, to be used as a base class for other matrix classes
@@ -90,19 +96,16 @@ class BaseMatrix:
         pad: the padding used to surround the matrix
     """
 
-    data: np.ndarray
+    data: np.matrix
     pad: str
+    input_: str
+    dtype: type
 
-    def parse_input(self, input_: str, pad: str = ".", caster: callable = str):
-        """
-        Input string to numpy matrix. Surround matrix with pad, to make sure we don't get index errors
-
-        Args:
-            input_: input string
-            pad: padding to add to the matrix. If None, no padding is added
-        """
+    def __init__(self, input_: str = None, pad: str = ".", dtype: type = str):
+        self.input_ = input_
         self.pad = pad
-        self.data = np.array([list(line) for line in input_.split("\n")], dtype=caster)
+        self.dtype = dtype
+        self.data = np.matrix([list(line) for line in input_.split("\n")], dtype=dtype)
         if pad is not None:
             self.data = np.pad(self.data, 1, constant_values=pad)
 
@@ -110,6 +113,13 @@ class BaseMatrix:
         if isinstance(item, Position):
             return self.data[item.i, item.j]
         return self.data[item]
+
+    def __setitem__(self, key: tuple[int, int] | Position, value: Any) -> None:
+        if isinstance(key, Position):
+            key = key.tuple_
+        if not self.is_in_bounds(Position(*key)):
+            raise ValueError(f"Index {key} is out of bounds")
+        self.data[key] = value
 
     def is_in_bounds(self, position: Position) -> bool:
         return (
@@ -158,4 +168,7 @@ class BaseMatrix:
         ]
 
     def __repr__(self):
-        return "\n".join(["".join(line) for line in self.data])
+        return "\n".join(["".join(line) for line in np.array(self.data)])
+
+    def __copy__(self):
+        return BaseMatrix(self.input_, pad=self.pad, dtype=self.dtype)
