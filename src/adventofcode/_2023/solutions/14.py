@@ -1,16 +1,15 @@
-from numpy import ndarray
-from adventofcode._templates.v20231204.puzzle_to_solve import PuzzleToSolve
-from adventofcode.helpers.base_matrix import BaseMatrix
 import numpy as np
-from functools import cache
+from numpy import ndarray
 
-# def 
+from adventofcode._templates.v20231204.puzzle_to_solve import PuzzleToSolve
+from adventofcode.helpers.base_matrix_v1 import BaseMatrixV1
+
+# def
 
 
-class Dish(BaseMatrix):
+class Dish(BaseMatrixV1):
     encountered_patterns: dict
-    
-    
+
     def spin(self, times: int):
         """
         Spin the dish a number of times.
@@ -23,7 +22,7 @@ class Dish(BaseMatrix):
             new_i = self.try_skip_cycles(i)
             self.encountered_patterns[self.__repr__()] = i
             i = new_i
-    
+
     def try_skip_cycles(self, i: int):
         """
         Check if the current pattern has been encountered before. If so, we can skip cycles.
@@ -35,11 +34,11 @@ class Dish(BaseMatrix):
             remaining_cycles = 1000000000 - i
             i = 1000000000 - (remaining_cycles % length_of_repeating_pattern)
         return i + 1
-    
+
     def spin_once(self):
         for direction in ["north", "west", "south", "east"]:
             self.tilt_dish(direction)
-    
+
     def tilt_dish(self, direction: str):
         """
         Tilt the dish in a direction.
@@ -61,13 +60,13 @@ class Dish(BaseMatrix):
             tilted = np.rot90(tilted, 1)
         if direction == "east":
             tilted = np.flip(tilted, axis=1)
-            
-        self.data = tilted 
-    
+
+        self.data = tilted
+
     def tilt_range(self, _range: ndarray) -> ndarray:
         """
         Tilt one range (col or row), to move all the round rocks to the left.
-        
+
         Args:
             _range: The range to tilt.
         Returns:
@@ -96,19 +95,24 @@ class Dish(BaseMatrix):
         """
         Sum the load for each round rock. For each round rock its the nr of rows minus the row index.
         """
-        return np.sum(self.data.shape[0] - r for r, c in self.iter_topleft_to_bottomright() if self.data[r, c] == "O")
+        return np.sum(
+            self.data.shape[0] - r
+            for r, c in self.iter_topleft_to_bottomright()
+            if self.data[r, c] == "O"
+        )
 
     def __repr__(self):
         return "\n".join(["".join(row) for row in self.data])
 
     def __hash__(self):
         return hash(self.__repr__())
-    
+
+
 class Puzzle14(PuzzleToSolve):
     @property
     def day(self) -> int:
         return 14
-    
+
     @property
     def year(self) -> int:
         return 2023

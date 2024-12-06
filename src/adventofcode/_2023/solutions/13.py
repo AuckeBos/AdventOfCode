@@ -1,18 +1,21 @@
 from typing import List
-from adventofcode._templates.v20231204.puzzle_to_solve import PuzzleToSolve
-from adventofcode.helpers.base_matrix import BaseMatrix
+
 import numpy as np
 
-class Pattern(BaseMatrix):
+from adventofcode._templates.v20231204.puzzle_to_solve import PuzzleToSolve
+from adventofcode.helpers.base_matrix_v1 import BaseMatrixV1
+
+
+class Pattern(BaseMatrixV1):
     """
-    A patern of ash and rocks. 
+    A patern of ash and rocks.
     Can search the mirror and return the score.
     Can also find the smudge, clean it, and return the score.
     """
-    
+
     mirror_index: int = None
     mirror_is_row: bool = None
-    
+
     def clean_and_search_mirror(self):
         """
         First find the mirror. Then try for each position:
@@ -41,11 +44,11 @@ class Pattern(BaseMatrix):
             return 100 * (self.mirror_index + 1)
         else:
             return self.mirror_index + 1
-    
+
     def search_mirror(self, is_row: bool) -> bool:
         """
         Search the mirror. The mirror is at the position where the pattern is the same on both sides.
-        
+
         :param is_row: Whether to search the mirror in the rows or columns.
         :return: Whether the mirror was found.
         """
@@ -54,7 +57,9 @@ class Pattern(BaseMatrix):
         # Loop over the rows/columns
         for i in range(0, self.data.shape[shape_index] - 1):
             # If the smudged pattern already had the mirror here, it can't be the position for the cleaned mirror
-            if (is_row and self.mirror_is_row and i == self.mirror_index) or (not is_row and not self.mirror_is_row and i == self.mirror_index):
+            if (is_row and self.mirror_is_row and i == self.mirror_index) or (
+                not is_row and not self.mirror_is_row and i == self.mirror_index
+            ):
                 continue
             x1_i, x2_i = i, i + 1
             # While the pattern is the same on both sides, keep going
@@ -74,27 +79,27 @@ class Pattern(BaseMatrix):
                 self.mirror_is_row = is_row
                 return True
         return False
-    
+
     def find_mirror(self) -> bool:
         """
         Search the mirror in both rows and columns. Return whether the mirror was found.
         """
         return self.search_mirror(is_row=True) or self.search_mirror(is_row=False)
-    
+
     def __repr__(self):
         str_ = ""
         for r in range(self.data.shape[0]):
             for c in range(self.data.shape[1]):
                 str_ += self.data[r, c]
             str_ += "\n"
-        return str_    
-        
+        return str_
+
 
 class Puzzle13(PuzzleToSolve):
     @property
     def day(self) -> int:
         return 13
-    
+
     @property
     def year(self) -> int:
         return 2023
@@ -133,7 +138,6 @@ class Puzzle13(PuzzleToSolve):
             pattern.parse_input(pattern_str, pad=None)
             patterns.append(pattern)
         return patterns
-            
 
     def a(self, patterns: List[Pattern]) -> int:
         """

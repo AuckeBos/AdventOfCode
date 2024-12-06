@@ -1,13 +1,16 @@
 from typing import List, Tuple
-from adventofcode._templates.v20231204.puzzle_to_solve import PuzzleToSolve
-from adventofcode.helpers.base_matrix import BaseMatrix
+
 import numpy as np
 
+from adventofcode._templates.v20231204.puzzle_to_solve import PuzzleToSolve
+from adventofcode.helpers.base_matrix_v1 import BaseMatrixV1
 
-class Map(BaseMatrix):
+
+class Map(BaseMatrixV1):
     """
     A map of galaxies
     """
+
     expansion_factor: int
 
     def set_expansion_factor(self, expansion_factor: int):
@@ -58,7 +61,7 @@ class Map(BaseMatrix):
             unexpanded_distance = np.abs(r1 - r2) + np.abs(c1 - c2)
             # For each exapanable row/col, add expansion factor - 1 to the distance. -1 because one was already counted in the unexpanded distance
             expanded_distance = unexpanded_distance + (self.expansion_factor - 1) * (
-                (amount_empty_rows_between + amount_empty_cols_between)
+                amount_empty_rows_between + amount_empty_cols_between
             )
             distance_sum += expanded_distance.sum()
         return distance_sum

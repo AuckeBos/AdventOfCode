@@ -1,12 +1,14 @@
 import heapq
-from adventofcode._templates.v20231204.puzzle_to_solve import PuzzleToSolve
-import numpy as np
-from numpy import ndarray
 from typing import List, Tuple
 
-from adventofcode.helpers.base_matrix import BaseMatrix
+import numpy as np
+from numpy import ndarray
 
-class Map(BaseMatrix):
+from adventofcode._templates.v20231204.puzzle_to_solve import PuzzleToSolve
+from adventofcode.helpers.base_matrix_v1 import BaseMatrixV1
+
+
+class Map(BaseMatrixV1):
     # For each node in map, set distance to start
     distances: ndarray
     # At each cell indicate the cost of entering that cell
@@ -19,7 +21,7 @@ class Map(BaseMatrix):
     current_distance: int
     history: List[Tuple[int, int]]
     parents: ndarray
-    
+
     def reset(self):
         self.costs = self.data.copy().astype(int)
         self.distances = np.full(
@@ -34,7 +36,7 @@ class Map(BaseMatrix):
     @property
     def end(self) -> Tuple[int, int]:
         return self.distances.shape[0] - 1, self.distances.shape[1] - 1
-    
+
     def is_valid_history(self, history: List[Tuple[int, int]]) -> bool:
         # Check if the history does not contain three consecutive moves in the same direction
         if len(history) < 4:
@@ -47,11 +49,12 @@ class Map(BaseMatrix):
         Return the neighbor to visit next. It's the one with the lowest distance, if it is not visited yet and the history would still be valid if we visit it
         """
         for r, c in neighbours:
-            if not self.visited[r, c] and self.is_valid_history(self.history + [(r, c)]):
+            if not self.visited[r, c] and self.is_valid_history(
+                self.history + [(r, c)]
+            ):
                 return r, c
         raise ValueError(f"No valid neighbour found for {self.active_node}")
-    
-    
+
     def done(self) -> bool:
         """
         Done if destination is visited
@@ -64,11 +67,15 @@ class Map(BaseMatrix):
         # Prevent going back
         result = [(r, c) for r, c in result if (r, c) != self.history[-1]]
         # Remove out of bounds
-        result = [(r, c) for r, c in result if 0 <= r < self.data.shape[0] and 0 <= c < self.data.shape[1]]
+        result = [
+            (r, c)
+            for r, c in result
+            if 0 <= r < self.data.shape[0] and 0 <= c < self.data.shape[1]
+        ]
         # Remove visited
         result = [(r, c) for r, c in result if not self.visited[r, c]]
         return result
-    
+
     def get_path(self) -> List[Tuple[int, int]]:
         result = np.full(self.costs.shape, fill_value=".")
         path = []
@@ -80,9 +87,10 @@ class Map(BaseMatrix):
         path.append((0, 0))
         print("\n".join(["".join(row) for row in result]))
         return result
-    
 
-    def dijkstra(self, min_straight_steps: int = None, max_straight_steps: int = None) -> int:
+    def dijkstra(
+        self, min_straight_steps: int = None, max_straight_steps: int = None
+    ) -> int:
         """
         Dijksta's with the constraints that:
         - If min_straight_steps is given, any direction must be taken at least min_straight_steps times in a row, before turning
@@ -103,30 +111,44 @@ class Map(BaseMatrix):
             if state in visited:
                 continue
             visited.add(state)
-            possible_directions = all_possible_directions - {(last_direction[0] * -1, last_direction[1] * -1)}
+            possible_directions = all_possible_directions - {
+                (last_direction[0] * -1, last_direction[1] * -1)
+            }
             for direction in possible_directions:
                 if direction == last_direction:
                     new_amount_steps_straight = amount_steps_straight + 1
-                    if max_straight_steps is not None and new_amount_steps_straight > max_straight_steps:
+                    if (
+                        max_straight_steps is not None
+                        and new_amount_steps_straight > max_straight_steps
+                    ):
                         continue
-                else: 
-                    if (amount_steps_straight != 0) and (min_straight_steps is not None and amount_steps_straight < min_straight_steps):
+                else:
+                    if (amount_steps_straight != 0) and (
+                        min_straight_steps is not None
+                        and amount_steps_straight < min_straight_steps
+                    ):
                         continue
                     new_amount_steps_straight = 1
-                if max_straight_steps is not None and new_amount_steps_straight > max_straight_steps:
-                    continue                
+                if (
+                    max_straight_steps is not None
+                    and new_amount_steps_straight > max_straight_steps
+                ):
+                    continue
                 r, c = node[0] + direction[0], node[1] + direction[1]
                 if 0 <= r < costs.shape[0] and 0 <= c < costs.shape[1]:
                     new_distance = distance + costs[r, c]
                     if new_distance < distances[r, c]:
                         distances[r, c] = new_distance
                         parents[r, c] = node
-                    heapq.heappush(queue, (new_distance, new_amount_steps_straight, direction, (r, c)))
+                    heapq.heappush(
+                        queue,
+                        (new_distance, new_amount_steps_straight, direction, (r, c)),
+                    )
         # Create a matrix of the path. Each cell has '.', excpet for the one in the shortest path, which has '#'. Use parents to find the path
         self.print_parents(distances, parents)
         print(distances[distances.shape[0] - 1, distances.shape[1] - 1])
         return distances[distances.shape[0] - 1, distances.shape[1] - 1]
-    
+
     def print_parents(self, distances: ndarray, parents: ndarray):
         result = np.full(self.costs.shape, fill_value=".")
         node = (distances.shape[0] - 1, distances.shape[1] - 1)
@@ -136,15 +158,14 @@ class Map(BaseMatrix):
             result[node[0], node[1]] = "#"
             node = parents[node]
         result[0, 0] = "#"
-        print("\n".join(["".join(row) for row in result]))        
-
+        print("\n".join(["".join(row) for row in result]))
 
 
 class Puzzle17(PuzzleToSolve):
     @property
     def day(self) -> int:
         return 17
-    
+
     @property
     def year(self) -> int:
         return 2023

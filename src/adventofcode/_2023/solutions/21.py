@@ -1,12 +1,12 @@
-from adventofcode._templates.v20231204.puzzle_to_solve import PuzzleToSolve
-from adventofcode.helpers.base_matrix import BaseMatrix
 import numpy as np
 
-class Garden(BaseMatrix):
-    
+from adventofcode._templates.v20231204.puzzle_to_solve import PuzzleToSolve
+from adventofcode.helpers.base_matrix_v1 import BaseMatrixV1
+
+
+class Garden(BaseMatrixV1):
     MAX_VAL = 26501365
-    
-    
+
     def walk(self, steps: int) -> int:
         test = np.tile(self.data, (steps, steps))
         # Set S to O
@@ -23,18 +23,19 @@ class Garden(BaseMatrix):
             positions = new_positions
             self.print_mat_with_updated_pos(positions)
         return len(positions) + 1
-    
+
     def print_mat_with_updated_pos(self, positions):
         mat = self.data.copy()
         for i, j in positions:
             mat[i, j] = "O"
         print("\n".join(["".join(line) for line in mat]))
 
+
 class Puzzle21(PuzzleToSolve):
     @property
     def day(self) -> int:
         return 21
-    
+
     @property
     def year(self) -> int:
         return 2023
@@ -59,7 +60,7 @@ class Puzzle21(PuzzleToSolve):
             "a_test": {"steps": 6},
             "b_test": {"steps": 5000},
             "a": {"steps": 64},
-            "b": {"steps": 26501365}
+            "b": {"steps": 26501365},
         }
 
     @property

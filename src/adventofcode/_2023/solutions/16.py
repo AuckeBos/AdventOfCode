@@ -1,51 +1,60 @@
-from typing import Tuple, List
+from typing import List, Tuple
 
-from numpy import ndarray
-from adventofcode._templates.v20231204.puzzle_to_solve import PuzzleToSolve
-from adventofcode.helpers.base_matrix import BaseMatrix
 import numpy as np
-import sys
-import copy
+from numpy import ndarray
 
-class Contraption(BaseMatrix):
+from adventofcode._templates.v20231204.puzzle_to_solve import PuzzleToSolve
+from adventofcode.helpers.base_matrix_v1 import BaseMatrixV1
+
+
+class Contraption(BaseMatrixV1):
     energy: ndarray
     visited: List[Tuple[Tuple[int, int], Tuple[int, int]]]
-    
+
     def parse_input(self, input_: str, pad: str = "."):
         super().parse_input(input_, pad)
         self.reset()
-    
+
     def reset(self):
-        self.energy = np.full(self.data.shape, '.')
+        self.energy = np.full(self.data.shape, ".")
         self.visited = []
-        
-    def new_beams(self, position: Tuple[int, int], direction: Tuple[int, int], type_: str) -> List[Tuple[Tuple[int, int], Tuple[int, int]]]:
+
+    def new_beams(
+        self, position: Tuple[int, int], direction: Tuple[int, int], type_: str
+    ) -> List[Tuple[Tuple[int, int], Tuple[int, int]]]:
         """
         Find the new beams, given the current position, direction and type
-        
+
         Args:
             position: current position
             direction: current direction
             type_: current type
-            
+
         Returns:
             List of new beams, as tuples of (position, direction)
         """
-        if type_ == ".": # Don't change direction
+        if type_ == ".":  # Don't change direction
             directions = [direction]
-        elif type_ == "|": # If moving vertical, stay vertical, else split into vertical
-            directions = [direction] if direction in [(1, 0), (-1, 0)] else [(1, 0), (-1, 0)]
-        elif type_ == "-": # If moving horizontal, stay horizontal, else split into horizontal
-            directions = [direction] if direction in [(0, 1), (0, -1)] else [(0, 1), (0, -1)]
-        elif type_ == "/": # Process the mirror
+        elif (
+            type_ == "|"
+        ):  # If moving vertical, stay vertical, else split into vertical
+            directions = (
+                [direction] if direction in [(1, 0), (-1, 0)] else [(1, 0), (-1, 0)]
+            )
+        elif (
+            type_ == "-"
+        ):  # If moving horizontal, stay horizontal, else split into horizontal
+            directions = (
+                [direction] if direction in [(0, 1), (0, -1)] else [(0, 1), (0, -1)]
+            )
+        elif type_ == "/":  # Process the mirror
             directions = [(-direction[1], -direction[0])]
-        elif type_ == "\\": # Process the mirror
-            directions = [(direction[1], direction[0])]        
+        elif type_ == "\\":  # Process the mirror
+            directions = [(direction[1], direction[0])]
         else:
             raise ValueError(f"Invalid type: {type_}")
         return [((position[0] + d[0], position[1] + d[1]), d) for d in directions]
-    
-    
+
     def process_beam(self, r: int, c: int, direction: Tuple[int, int]) -> int:
         """
         Process a beam, given the starting position and direction.
@@ -68,7 +77,7 @@ class Puzzle16(PuzzleToSolve):
     @property
     def day(self) -> int:
         return 16
-    
+
     @property
     def year(self) -> int:
         return 2023
@@ -101,8 +110,12 @@ class Puzzle16(PuzzleToSolve):
         contraption = Contraption()
         contraption.parse_input(input_, "#")
         return contraption
-    
-    def find_max_energy(self, contraption: Contraption, starting_points: List[Tuple[int, int, Tuple[int, int]]]) -> int:
+
+    def find_max_energy(
+        self,
+        contraption: Contraption,
+        starting_points: List[Tuple[int, int, Tuple[int, int]]],
+    ) -> int:
         """
         Find the max energy, given a list of starting points.
         """
@@ -118,14 +131,21 @@ class Puzzle16(PuzzleToSolve):
         Find the energy of the contraption, given the starting point (1, 1) and direction (0, 1)
         """
         return self.find_max_energy(contraption, [(1, 1, (0, 1))])
-    
-    def get_entrypoints(self, contraption: Contraption) -> List[Tuple[int, int, Tuple[int, int]]]:
+
+    def get_entrypoints(
+        self, contraption: Contraption
+    ) -> List[Tuple[int, int, Tuple[int, int]]]:
         """
         Get the entrypoints of the contraption. These are the outer edges. Exclude padding. Used in b)
         """
         r_range = range(1, contraption.data.shape[0] - 1)
         c_range = range(1, contraption.data.shape[1] - 1)
-        return [(r, 1, (0, 1)) for r in r_range] + [(r, contraption.data.shape[1] - 2, (0, -1)) for r in r_range] + [(1, c, (1, 0)) for c in c_range] + [(contraption.data.shape[0] - 2, c, (-1, 0)) for c in c_range]        
+        return (
+            [(r, 1, (0, 1)) for r in r_range]
+            + [(r, contraption.data.shape[1] - 2, (0, -1)) for r in r_range]
+            + [(1, c, (1, 0)) for c in c_range]
+            + [(contraption.data.shape[0] - 2, c, (-1, 0)) for c in c_range]
+        )
 
     def b(self, contraption: Contraption):
         """

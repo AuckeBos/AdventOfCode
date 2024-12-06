@@ -1,10 +1,10 @@
 import numpy as np
 
 from adventofcode._templates.v20231204.puzzle_to_solve import PuzzleToSolve
-from adventofcode.helpers.base_matrix import BaseMatrix
+from adventofcode.helpers.base_matrix_v1 import BaseMatrixV1
 
 
-class WordSearch(BaseMatrix):
+class WordSearch(BaseMatrixV1):
     mask: np.ndarray
 
     def search_word(

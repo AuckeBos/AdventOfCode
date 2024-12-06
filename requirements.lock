@@ -12,6 +12,8 @@
 -e file:.
 advent-of-code-data==2.0.4
     # via adventofcode
+annotated-types==0.7.0
+    # via pydantic
 aocd-example-parser==2023.12.20
     # via advent-of-code-data
 beautifulsoup4==4.12.3
@@ -50,6 +52,10 @@ platformdirs==4.3.6
     # via black
 pycryptodomex==3.21.0
     # via browser-cookie3
+pydantic==2.10.3
+    # via adventofcode
+pydantic-core==2.27.1
+    # via pydantic
 python-dateutil==2.9.0.post0
     # via pandas
 pytz==2024.2
@@ -70,6 +76,8 @@ tqdm==4.67.1
     # via nltk
 typing-extensions==4.12.2
     # via black
+    # via pydantic
+    # via pydantic-core
 tzdata==2024.2
     # via advent-of-code-data
     # via pandas

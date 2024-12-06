@@ -1,15 +1,13 @@
 import math
+
 from adventofcode._templates.v20231201.puzzle_to_solve import PuzzleToSolve
-import numpy as np
-
-from adventofcode.helpers.base_matrix import BaseMatrix
+from adventofcode.helpers.base_matrix_v1 import BaseMatrixV1
 
 
-class Matrix(BaseMatrix):
-    
+class Matrix(BaseMatrixV1):
     def __init__(self, input_: str):
         self.parse_input(input_, ".")
-    
+
     def find_part_numbers(self):
         return [
             self.get_full_part_number(i, j)
@@ -26,44 +24,50 @@ class Matrix(BaseMatrix):
 
     def is_adjacent_to_symbol(self, i: int, j: int) -> bool:
         """
-         Check if a given index is adjacent to a symbol (not a digit or ".")
-         """
+        Check if a given index is adjacent to a symbol (not a digit or ".")
+        """
         return any(
             [
-                (not self.data[x, y].isdigit()) and (not self.data[x, y] == ".") for x, y in self.adjacent_fields(i, j)
+                (not self.data[x, y].isdigit()) and (not self.data[x, y] == ".")
+                for x, y in self.adjacent_fields(i, j)
             ]
         )
-    
+
     def get_adjacent_part_numbers(self, i: int, j: int) -> list[int]:
         """
         Get the adjacent part numbers of a given index.
         Use list({}) to remove duplicates. This assumes that we never have 2 equal part numbers adjacent to i,j. This turns out to be true.
         """
-        return list({
-            self.get_full_part_number(x, y) for x, y in self.adjacent_fields(i, j) if self.is_part_of_part_number(x, y)
-        })
-    
+        return list(
+            {
+                self.get_full_part_number(x, y)
+                for x, y in self.adjacent_fields(i, j)
+                if self.is_part_of_part_number(x, y)
+            }
+        )
+
     def is_gear(self, i: int, j: int) -> bool:
         """
         A gear is a "*" with exactly 2 adjacent part numbers
         """
-        return (
-            self.data[i, j] == "*" and
-            len(self.get_adjacent_part_numbers(i, j))  == 2
-        )
-    
+        return self.data[i, j] == "*" and len(self.get_adjacent_part_numbers(i, j)) == 2
+
     def get_gear_ratio(self, i: int, j: int) -> int:
         """
         The gear ratio is the product of the adjacent part numbers, if the i,j is a gear. Else 0.
         """
-        return math.prod(self.get_adjacent_part_numbers(i, j)) if self.is_gear(i, j) else 0
-    
+        return (
+            math.prod(self.get_adjacent_part_numbers(i, j)) if self.is_gear(i, j) else 0
+        )
+
     def get_full_part_number(self, i: int, j: int) -> int:
         """
         Get the full part number, given index i,j is the start of the part number
         """
         if not self.data[i, j].isdigit():
-            raise ValueError(f"Index {i}, {j} is not a digit, hence cannot be part of a part number")
+            raise ValueError(
+                f"Index {i}, {j} is not a digit, hence cannot be part of a part number"
+            )
         j_iter = j
         part_number = self.data[i, j]
         # Seek left
@@ -80,34 +84,36 @@ class Matrix(BaseMatrix):
     def is_part_of_part_number(self, i: int, j: int) -> bool:
         """
         Check if a given index is part of a part number. This is the case if
-        - Self is a digit and 
+        - Self is a digit and
         - Self is adjacent to a symbol or Next is part of a part number
         """
         return (
-            self.data[i, j].isdigit() # Self is digit
-            and
-            (
-                self.is_adjacent_to_symbol(i, j) # Self is adjacent to a symbol
-                or
-                self.is_part_of_part_number(i, j + 1) # Next is part of the part number
+            self.data[i, j].isdigit()  # Self is digit
+            and (
+                self.is_adjacent_to_symbol(i, j)  # Self is adjacent to a symbol
+                or self.is_part_of_part_number(
+                    i, j + 1
+                )  # Next is part of the part number
             )
-        )        
-    
+        )
+
     def is_start_of_part_number(self, i: int, j: int) -> bool:
         """
         i,j is the start of a part number if we have no digit on the left, and i,j is part of a part number
         """
         return (
-            not self.data[i, j - 1].isdigit() # Left is not a digit (this would mean i,j is not the start)
-            and self.is_part_of_part_number(i, j) # i,j is part of a part number
+            not self.data[
+                i, j - 1
+            ].isdigit()  # Left is not a digit (this would mean i,j is not the start)
+            and self.is_part_of_part_number(i, j)  # i,j is part of a part number
         )
-        
+
 
 class Puzzle3(PuzzleToSolve):
     @property
     def day(self) -> int:
         return 3
-    
+
     @property
     def year(self) -> int:
         return 2023

@@ -1,7 +1,83 @@
-from functools import reduce
-from typing import List, Tuple, Union
+from dataclasses import dataclass
+from typing import Generator, List, Tuple
 
 import numpy as np
+from pydantic import BaseModel, Field
+
+
+class Position(BaseModel):
+    i: int
+    j: int
+
+    def __add__(self, other) -> "Position":
+        return Position(self.i + other.i, self.j + other.j)
+
+    @property
+    def tuple_(self) -> tuple[int, int]:
+        return self.i, self.j
+
+    def direction_of(self, other: "Position") -> "Direction":
+        return Direction(*(other - self).tuple_)
+
+    @classmethod
+    def directions(
+        self, *, include_axis: bool = True, include_diagonal: bool = True
+    ) -> List["Direction"]:
+        directions = []
+        if include_axis:
+            directions += [
+                Direction(0, 1),
+                Direction(1, 0),
+                Direction(0, -1),
+                Direction(-1, 0),
+            ]
+        if include_diagonal:
+            directions += [
+                Direction(1, 1),
+                Direction(1, -1),
+                Direction(-1, 1),
+                Direction(-1, -1),
+            ]
+        return directions
+
+    @property
+    def neighbors(
+        self, *, include_axis: bool = True, include_diagonal: bool = True
+    ) -> List["Position"]:
+        return [
+            self + d
+            for d in self.directions(
+                include_axis=include_axis, include_diagonal=include_diagonal
+            )
+        ]
+
+
+@dataclass
+class Direction(Position):
+    i: int = Field(None, ge=-1, le=1)
+    j: int = Field(None, ge=-1, le=1)
+
+    def __post_init__(self):
+        if self.i == 0 and self.j == 0:
+            raise ValueError("i and j cannot both be 0")
+
+    def turn_right(self) -> "Direction":
+        if abs(self.i) == abs(self.j):
+            raise ValueError(
+                f"Can only turn on horizontal / vertical directions, not {self.tuple_}"
+            )
+        return {
+            (-1, 0): Direction(0, 1),
+            (0, 1): Direction(1, 0),
+            (1, 0): Direction(0, -1),
+            (0, -1): Direction(-1, 0),
+        }[self.tuple_]
+
+    def turn_left(self):
+        return self.turn_right().turn_right().turn_right()
+
+    def reverse(self):
+        return Direction(-self.i, -self.j)
 
 
 class BaseMatrix:
@@ -17,7 +93,7 @@ class BaseMatrix:
     data: np.ndarray
     pad: str
 
-    def parse_input(self, input_: str, pad: str = "."):
+    def parse_input(self, input_: str, pad: str = ".", caster: callable = str):
         """
         Input string to numpy matrix. Surround matrix with pad, to make sure we don't get index errors
 
@@ -26,80 +102,60 @@ class BaseMatrix:
             pad: padding to add to the matrix. If None, no padding is added
         """
         self.pad = pad
-        # Create numpy character matrix from input
-        self.data = np.array([list(line) for line in input_.split("\n")])
+        self.data = np.array([list(line) for line in input_.split("\n")], dtype=caster)
         if pad is not None:
-            # Surround matrix with ".", to make sure we don't get index errors
             self.data = np.pad(self.data, 1, constant_values=pad)
 
-    def iter_topleft_to_bottomright(self):
+    def __getitem__(self, item: Tuple[int, int] | Position) -> str:
+        if isinstance(item, Position):
+            return self.data[item.i, item.j]
+        return self.data[item]
+
+    def is_in_bounds(self, position: Position) -> bool:
+        return (
+            0 <= position.i < self.data.shape[0]
+            and 0 <= position.j < self.data.shape[1]
+        )
+
+    def iter_topleft_to_bottomright(self) -> Generator[Position, None, None]:
         """
         Yield all indices from top left to bottom right. Do not iterate of the pad
         """
         start_at = 1 if self.pad is not None else 0
-        for i in range(start_at, self.data.shape[0] - (start_at)):
-            for j in range(start_at, self.data.shape[1] - (start_at)):
-                yield i, j
-
-    def fields_to_values(self, fields: List[Tuple[int, int]]):
-        """
-        Get the values of a list of fields
-        """
-        return [self.data[i, j] for i, j in fields]
+        yield from [
+            Position(i, j)
+            for i in range(start_at, self.data.shape[0] - (start_at))
+            for j in range(start_at, self.data.shape[1] - (start_at))
+        ]
 
     def adjacent_fields(
         self,
-        i: int,
-        j: int,
+        field: Position,
         *,
-        as_values: bool = False,
-        horizontal_vertical: bool = True,
-        diagonal: bool = True,
-    ) -> Union[List[Tuple[int, int]], List[str]]:
-        """
-        Get the adjacent fields of a given index
+        include_axis: bool = True,
+        include_diagonal: bool = True,
+    ) -> Generator[Position, None, None]:
+        yield from [
+            field + d
+            for d in Position.directions(
+                include_axis=include_axis, include_diagonal=include_diagonal
+            )
+            if self.is_in_bounds(field + d)
+        ]
 
-        Args:
-            i: row index
-            j: column index
-            diagonal: include diagonal fields
-            as_values: return values instead of indices
-
-        Returns:
-            List of indices (tuples) or values (strings)
-        """
-        indices = []
-        if horizontal_vertical:
-            indices += [(i - 1, j), (i, j - 1), (i, j + 1), (i + 1, j)]
-        if diagonal:
-            indices += [(i - 1, j - 1), (i - 1, j + 1), (i + 1, j - 1), (i + 1, j + 1)]
-        if as_values:
-            return self.fields_to_values(indices)
-        return indices
-
-    def direction(self, p1: Tuple[int, int], p2: Tuple[int, int]) -> Tuple[int, int]:
-        """
-        Get the direction from p1 to p2
-        """
-        return np.sign(p2[0] - p1[0]), np.sign(p2[1] - p1[1])
-
-    def add(self, *ps: Tuple[int, int]) -> Tuple[int, int]:
-        """
-        Add multiple points
-        """
-        return reduce(lambda x, y: (x[0] + y[0], x[1] + y[1]), ps)
-
-    def subtract(self, ps: Tuple[int, int]) -> Tuple[int, int]:
-        """
-        Subtract multiple points
-        """
-        return reduce(lambda x, y: (x[0] - y[0], x[1] - y[1]), ps)
-
-    def invert(self, p: Tuple[int, int], *, row: bool, col: bool) -> Tuple[int, int]:
-        """
-        Invert a point, in row and/or column
-        """
-        return (p[0] * (-1 if row else 1), p[1] * (-1 if col else 1))
+    def adjacent_values(
+        self,
+        field: Position,
+        *,
+        include_axis: bool = True,
+        include_diagonal: bool = True,
+    ) -> List[str]:
+        return [
+            self[d]
+            for d in self.adjacent_fields(
+                field, include_axis=include_axis, include_diagonal=include_diagonal
+            )
+        ]
 
     def __repr__(self):
         return "\n".join(["".join(line) for line in self.data])
