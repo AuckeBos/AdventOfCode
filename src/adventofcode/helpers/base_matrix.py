@@ -52,6 +52,9 @@ class Position:
             )
         ]
 
+    def __hash__(self):
+        return hash(self.tuple_)
+
 
 class Direction(Position):
     def __post_init__(self):
@@ -167,8 +170,12 @@ class BaseMatrix:
             )
         ]
 
+    @staticmethod
+    def matrix_to_str(matrix: np.matrix) -> str:
+        return "\n".join(["".join(line) for line in np.array(matrix)])
+
     def __repr__(self):
-        return "\n".join(["".join(line) for line in np.array(self.data)])
+        return self.matrix_to_str(self.data)
 
     def __copy__(self):
         return BaseMatrix(self.input_, pad=self.pad, dtype=self.dtype)
