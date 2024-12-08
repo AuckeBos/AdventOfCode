@@ -13,6 +13,9 @@ class Position:
     def __add__(self, other: Union["Position", "Direction"]) -> "Position":
         return Position(self.i + other.i, self.j + other.j)
 
+    def __sub__(self, other: "Position") -> "Direction":
+        return Position(self.i - other.i, self.j - other.j)
+
     @property
     def tuple_(self) -> tuple[int, int]:
         return self.i, self.j
@@ -124,11 +127,10 @@ class BaseMatrix:
             raise ValueError(f"Index {key} is out of bounds")
         self.data[key] = value
 
-    def is_in_bounds(self, position: Position) -> bool:
-        return (
-            0 <= position.i < self.data.shape[0]
-            and 0 <= position.j < self.data.shape[1]
-        )
+    def is_in_bounds(self, position: Position | tuple[int, int]) -> bool:
+        i = position.i if isinstance(position, Position) else position[0]
+        j = position.j if isinstance(position, Position) else position[1]
+        return 0 <= i < self.data.shape[0] and 0 <= j < self.data.shape[1]
 
     def iter_topleft_to_bottomright(self) -> Generator[Position, None, None]:
         """
