@@ -22,6 +22,8 @@ bitstring==3.1.9
     # via adventofcode
 black==21.12b0
     # via adventofcode
+bounded-pool-executor==0.0.3
+    # via pqdm
 browser-cookie3==0.19.1
     # via adventofcode
 click==8.1.7
@@ -37,6 +39,8 @@ lz4==4.3.3
     # via browser-cookie3
 mypy-extensions==1.0.0
     # via black
+nest-asyncio==1.6.0
+    # via adventofcode
 nltk==3.9.1
     # via adventofcode
 numpy==1.26.4
@@ -50,6 +54,8 @@ pebble==5.1.0
     # via advent-of-code-data
 platformdirs==4.3.6
     # via black
+pqdm==0.2.0
+    # via adventofcode
 pycryptodomex==3.21.0
     # via browser-cookie3
 pydantic==2.10.3
@@ -73,9 +79,12 @@ soupsieve==2.6
 tomli==1.2.3
     # via black
 tqdm==4.67.1
+    # via adventofcode
     # via nltk
+    # via pqdm
 typing-extensions==4.12.2
     # via black
+    # via pqdm
     # via pydantic
     # via pydantic-core
 tzdata==2024.2
