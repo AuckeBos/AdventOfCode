@@ -44,7 +44,6 @@ class Position:
             ]
         return directions
 
-    @property
     def neighbors(
         self, *, include_axis: bool = True, include_diagonal: bool = True
     ) -> List["Position"]:
@@ -84,12 +83,17 @@ class Direction(Position):
     def reverse(self):
         return Direction(-self.i, -self.j)
 
+    def __mul__(self, other: int) -> "Direction":
+        return Direction(self.i * other, self.j * other)
+
 
 class Directions(Enum):
     TOP: Direction = Direction(-1, 0)
     RIGHT: Direction = Direction(0, 1)
     BOTTOM: Direction = Direction(1, 0)
     LEFT: Direction = Direction(0, -1)
+
+    ALL = [TOP, RIGHT, BOTTOM, LEFT]
 
 
 class BaseMatrix:
@@ -174,7 +178,7 @@ class BaseMatrix:
 
     @staticmethod
     def matrix_to_str(matrix: np.matrix) -> str:
-        return "\n".join(["".join(line) for line in np.array(matrix)])
+        return "\n".join(["".join([str(x) for x in line]) for line in np.array(matrix)])
 
     def __repr__(self):
         return self.matrix_to_str(self.data)
