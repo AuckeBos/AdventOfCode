@@ -28,10 +28,10 @@ class Garden(BaseMatrix):
 
     def find_sides(self, pos: Position) -> list:
         if pos.i == 3 and pos.j == 3:
-            # should be 3, but is 2. top is counted, right is not counted (ok). right is not counted (nok). Becuase one space more to the right is already counted
-            test = np.full(self.sidecounts.shape, '.', dtype=str)
-            test[np.where(self.data == "C")] = self.sidecounts[self.data == "C"]
-            print(self.matrix_to_str(test))            
+            # should be 3, but is 2. top is counted, right is not counted (ok). left is not counted (nok). Becuase one space more to the right is already counted
+            # test = np.full(self.sidecounts.shape, '.', dtype=str)
+            # test[np.where(self.data == "C")] = self.sidecounts[self.data == "C"]
+            # print(self.matrix_to_str(test))            
             test = ""        
         if pos.i == 3 and pos.j == 4:
             test = ""
@@ -54,13 +54,15 @@ class Garden(BaseMatrix):
                 yet_handled = False
                 while True:
                     new_pos = pos + perpendicular_direction * i
-                    if not self.is_in_bounds(new_pos) or self[new_pos] != self[pos] or (
+                    if (not self.is_in_bounds(new_pos)) or self[new_pos] != self[pos] or (
                         self.is_handled(new_pos) and direction not in self.sides[new_pos.tuple_]
                     ):
                         break
+                    if self.is_in_bounds(new_pos + direction) and self[new_pos + direction] == self[pos]:
+                        break                
                     # This statemented fixes C but breaks V
-                    if not self.is_handled(new_pos):
-                        break
+                    # if not self.is_handled(new_pos):
+                        # break
                     if (
                         self.is_handled(new_pos)
                         and direction in self.sides[new_pos.tuple_]
@@ -96,7 +98,7 @@ class Garden(BaseMatrix):
                 self.handle(n)
 
     def flood(self):
-        for p in self.iter_topleft_to_bottomright():
+        for p in list(self.iter_topleft_to_bottomright())[::-1]:
             if self.is_handled(p):
                 continue
             self.handle(p)
@@ -130,7 +132,7 @@ MMMISSJEEE"""
 
     @property
     def test_answer_b(self):
-        return None
+        return 1206
 
     def parse_input(self, input_: str) -> Garden:
         return Garden(input_)
@@ -153,17 +155,17 @@ MMMISSJEEE"""
             sides = np.sum(garden.sidecounts[garden.groups == group])
             size = np.sum(garden.groups == group)
             letter = garden.data[garden.groups == group][0][0][0]
-            print(f"Group {group} ({letter}): {size} * {sides} = {size * sides}")
+            # print(f"Group {group} ({letter}): {size} * {sides} = {size * sides}")
             
             test = np.full(garden.sidecounts.shape, '.', dtype=str)
             test[np.where(garden.groups == group)] = garden.sidecounts[garden.groups == group]
-            print(garden.matrix_to_str(test))
+            # print(garden.matrix_to_str(test))
 
             result += size * sides
-        print(garden.matrix_to_str(garden.sidecounts))
+        # print(garden.matrix_to_str(garden.sidecounts))
         return result
 
 
 puzzle = Puzzle12()
-puzzle.solve_exercise("b")
+# puzzle.solve_exercise("b")
 puzzle.solve()
