@@ -27,6 +27,13 @@ class Position:
     def directions(
         self, *, include_axis: bool = True, include_diagonal: bool = True
     ) -> List["Direction"]:
+        """Get all possible directions.
+
+        Args:
+            include_axis: Whether to include axis-aligned directions
+            include_diagonal: Whether to include diagonal directions
+
+        """
         directions = []
         if include_axis:
             directions += [
@@ -47,6 +54,7 @@ class Position:
     def neighbors(
         self, *, include_axis: bool = True, include_diagonal: bool = True
     ) -> List["Position"]:
+        """Get all neighboring positions."""
         return [
             self + d
             for d in self.directions(
@@ -66,6 +74,7 @@ class Direction(Position):
             raise ValueError("i and j cannot both be 0")
 
     def turn_right(self) -> "Direction":
+        """Get the direction after turning right 90 degrees."""
         if abs(self.i) == abs(self.j):
             raise ValueError(
                 f"Can only turn on horizontal / vertical directions, not {self.tuple_}"
@@ -77,10 +86,12 @@ class Direction(Position):
             (0, -1): Direction(-1, 0),
         }[self.tuple_]
 
-    def turn_left(self):
+    def turn_left(self) -> "Direction":
+        """Get the direction after turning left 90 degrees."""
         return self.turn_right().turn_right().turn_right()
 
-    def reverse(self):
+    def reverse(self) -> "Direction":
+        """Get the direction after reversing 180 degrees."""
         return Direction(-self.i, -self.j)
 
     def __mul__(self, other: int) -> "Direction":
@@ -88,10 +99,12 @@ class Direction(Position):
 
 
 class Directions(Enum):
-    TOP: Direction = Direction(-1, 0)
-    RIGHT: Direction = Direction(0, 1)
-    BOTTOM: Direction = Direction(1, 0)
-    LEFT: Direction = Direction(0, -1)
+    """Enum of static directions."""
+
+    TOP = Direction(-1, 0)
+    RIGHT = Direction(0, 1)
+    BOTTOM = Direction(1, 0)
+    LEFT = Direction(0, -1)
 
     ALL = [TOP, RIGHT, BOTTOM, LEFT]
 
@@ -111,7 +124,14 @@ class BaseMatrix:
     input_: str
     dtype: type
 
-    def __init__(self, input_: str = None, pad: str = ".", dtype: type = str):
+    def __init__(self, input_: str, pad: str | None = ".", dtype: type = str):
+        """Parse the input into a numpy matrix.
+
+        Args:
+            input_: The input string to parse
+            pad: The padding character to use (default: "."). If None, no padding is applied.
+            dtype: The data type of the matrix (default: str)
+        """
         self.input_ = input_
         self.pad = pad
         self.dtype = dtype
@@ -132,14 +152,13 @@ class BaseMatrix:
         self.data[key] = value
 
     def is_in_bounds(self, position: Position | tuple[int, int]) -> bool:
+        """Check if a position is in bounds of the matrix (excluding padding)."""
         i = position.i if isinstance(position, Position) else position[0]
         j = position.j if isinstance(position, Position) else position[1]
         return 0 <= i < self.data.shape[0] and 0 <= j < self.data.shape[1]
 
     def iter_topleft_to_bottomright(self) -> Generator[Position, None, None]:
-        """
-        Yield all indices from top left to bottom right. Do not iterate of the pad
-        """
+        """Yield all indices from top left to bottom right. Do not iterate of the pad."""
         start_at = 1 if self.pad is not None else 0
         yield from [
             Position(i, j)
@@ -154,6 +173,13 @@ class BaseMatrix:
         include_axis: bool = True,
         include_diagonal: bool = True,
     ) -> Generator[Position, None, None]:
+        """Yield all adjacent fields to a given field.
+
+        Args:
+            field: The position to get adjacent fields for
+            include_axis: Whether to include axis-aligned directions
+            include_diagonal: Whether to include diagonal directions
+        """
         yield from [
             field + d
             for d in Position.directions(
@@ -169,6 +195,13 @@ class BaseMatrix:
         include_axis: bool = True,
         include_diagonal: bool = True,
     ) -> List[str]:
+        """Get all adjacent values to a given field.
+
+        Args:
+            field: The position to get adjacent values for
+            include_axis: Whether to include axis-aligned directions
+            include_diagonal: Whether to include diagonal directions
+        """
         return [
             self[d]
             for d in self.adjacent_fields(
@@ -178,6 +211,7 @@ class BaseMatrix:
 
     @staticmethod
     def matrix_to_str(matrix: np.matrix) -> str:
+        """Convert a numpy matrix to a string representation."""
         return "\n".join(["".join([str(x) for x in line]) for line in np.array(matrix)])
 
     def __repr__(self):
