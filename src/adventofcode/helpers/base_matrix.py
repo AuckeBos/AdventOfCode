@@ -124,20 +124,39 @@ class BaseMatrix:
     input_: str
     dtype: type
 
-    def __init__(self, input_: str, pad: str | None = ".", dtype: type = str):
+    def __init__(
+        self,
+        input_: str,
+        pad: str | None = ".",
+        dtype: type = str,
+        split_columns_on: str | None = None,
+    ):
         """Parse the input into a numpy matrix.
 
         Args:
             input_: The input string to parse
             pad: The padding character to use (default: "."). If None, no padding is applied.
             dtype: The data type of the matrix (default: str)
+            split_columns_on: The character to split columns on. If None, each cell is 1 character.
+                If provided, each cell could be multiple characters. In this case
         """
         self.input_ = input_
         self.pad = pad
         self.dtype = dtype
-        self.data = np.matrix([list(line) for line in input_.split("\n")], dtype=dtype)
+        # Do not split, assume each cell has one character
+        if split_columns_on is None:
+            self.data = np.matrix(
+                [list(line) for line in input_.split("\n")], dtype=dtype
+            )
+        # Create multi-character cells by splitting on the given character
+        else:
+            self.data = np.matrix(
+                [line.split(split_columns_on) for line in input_.split("\n")],
+                dtype=dtype,
+            )
+
         if pad is not None:
-            self.data = np.pad(self.data, 1, constant_values=pad)
+            self.data = np.pad(self.data, 1, constant_values=pad)  # type: ignore
 
     def __getitem__(self, item: Tuple[int, int] | Position) -> str:
         if isinstance(item, Position):
@@ -208,6 +227,17 @@ class BaseMatrix:
                 field, include_axis=include_axis, include_diagonal=include_diagonal
             )
         ]
+
+    @property
+    def rows(self) -> Generator[np.matrix, None, None]:
+        """Yield all rows of the matrix."""
+        for i in range(self.data.shape[0]):
+            yield self.data[i, :]
+
+    @property
+    def columns(self) -> Generator[np.matrix, None, None]:
+        """Yield all columns of the matrix."""
+        yield from self.data.T
 
     @staticmethod
     def matrix_to_str(matrix: np.matrix) -> str:
